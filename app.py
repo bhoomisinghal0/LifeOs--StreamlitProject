@@ -3,163 +3,19 @@ import pandas as pd
 from google import genai
 from dotenv import load_dotenv
 import os
-import urllib.parse #help in building pollination url
+import urllib.parse  # help in building pollination url
 
 load_dotenv()
 
-client=genai.Client(api_key=os.getenv("API_KEY2"))
-st.set_page_config(
-    page_title="Life-OS",
-    page_icon="🧠",
-    layout="wide"
-)
+client = genai.Client(api_key=os.getenv("API_KEY2"))
+st.set_page_config(page_title="Life-OS", page_icon="🧠", layout="wide")
+
 
 st.title("🧠 Your Personal Life-OS")
 
-st.markdown("""
-<style>
-
-.hero-subtitle{
-    text-align:center;
-    font-size:24px;
-    color:#d8b4fe !important;
-    font-weight:700;
-    margin-top:-20px;
-    margin-bottom:5px;
-}
-
-.hero-tagline{
-    text-align:center;
-    font-size:16px;
-    color:#9ca3af !important;
-    margin-bottom:40px !important;
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-
-st.markdown("""
-<div class="hero-subtitle">
-🔮 AI Powered Digital Wellbeing Dashboard
-</div>
-
-<div class="hero-tagline">
-Reclaim your time, one mindful day at a time.
-</div>
-""", unsafe_allow_html=True)  
-
-
-df=pd.read_csv("screentime.csv")
-
-
-
-st.sidebar.header("Controls 🕹️")
-
-dates=sorted(df["Date"].unique())
-selected_day=st.sidebar.selectbox(
-    "Choose date",
-    dates
-)
-
-goal=st.sidebar.slider(
-    "Daily Goal (in minutes)",
-    20 ,#min value
-    600, #max value
-    240, #default value
-    step=10
-)
-
-coln1,coln2=st.columns(2)
-today_df = df[df["Date"] == selected_day].reset_index(drop=True) #Reset the index and discard the old one.
-#stores the row which meet the condition and return True
-
-total_minutes= today_df["Minutes_Used"].sum() #total screen time
-
-
-
-#calculates key performance indicator
-
-with coln1:
-    with st.expander("📋 View Today's Data"):
-        st.dataframe(today_df)
-
-
-if total_minutes > goal + 180:
-
-    avatar_prompt = (
-        "A tired zombie sitting in a dark room, hypnotized by a glowing smartphone, "
-        "digital art, neon lighting."
-    )
-
-elif total_minutes > goal:
-
-    avatar_prompt = (
-        "A sleepy student surrounded by social media notifications, messy desk, "
-        "cinematic illustration."
-    )
-
-else:
-
-    avatar_prompt = (
-        "A focused warrior studying peacefully with books, sunlight, healthy lifestyle, "
-        "digital painting."
-    )
-
-
-encoded_prompt = urllib.parse.quote(avatar_prompt)
-
-image_url = (
-    f"https://image.pollinations.ai/prompt/{encoded_prompt}"
-)
-
-
-with coln2:
-    
-    
-    colm1, colm2, colm3 = st.columns([1,6,1])
-
-    with colm2:
-        st.subheader("🎭 Today's Digital Avatar:")
-        st.markdown(
-                    "<div style='text-align:center;'>"
-                    "<p style='color:#c084fc;'>"
-                    "Put the phone down and take a walk."
-                     "</p></div>",
-                    unsafe_allow_html=True
-                 )
-        try:
-           
-            st.image(
-            image_url,
-            width=220
-            )
-            st.caption("🧟 Doomscroll Zombie")
-        except:
-            st.toast("Avatar Can't be generated")
-
-
-
-
-st.divider()
-
-
-top_app=(today_df
-         .groupby("App_Name")["Minutes_Used"]
-         .sum()
-         .idxmax()
-         )
-
-delta = goal - total_minutes
-
-st.header("Your Key Performance:")
-
-#creating columns
-col1, col2,col3= st.columns(3)
-
-# Injecting Custom CSS to design 
+# Injecting Custom CSS to design
 st.markdown(
-     """
+    """
      <style>
     /* Background Canvas: Smooth Dark Indigo to Black Gradient */
     .stApp {
@@ -190,6 +46,52 @@ st.markdown(
         border-right: 2px solid #7b2ff7;
         box-shadow: 5px 0 25px rgba(123, 47, 247, 0.15);
     }
+
+    section[data-testid="stSidebar"]{
+
+     padding-top:0px;
+
+     padding-left:18px;
+
+     padding-right:18px;
+
+    }
+
+    div[data-testid="stSelectbox"]{
+margin-top:10px;
+margin-bottom:10px;
+
+}
+
+section[data-testid="stSidebar"] h2{
+
+font-size:32px;
+
+font-weight:900;
+
+}
+
+div[data-baseweb="slider"] [role="slider"]{
+
+background:#a855f7 !important;
+
+box-shadow:0 0 15px #a855f7;
+
+}
+
+div[data-baseweb="slider"] div{
+
+border-radius:20px;
+
+}
+
+div[data-testid="stSlider"]{
+
+margin-top:0px;
+
+margin-bottom:0px;
+
+}
     
     /* Match Sidebar text elements */
     section[data-testid="stSidebar"] .stMarkdown, 
@@ -311,117 +213,373 @@ st.markdown(
     height: 100%;
     flex: 1;
     }
+    
+    /* Hide radio label */
+[data-testid="stRadio"] label{
+    font-size:0px;
+}
+
+/* Space between options */
+[data-testid="stRadio"] > div{
+    gap:12px;
+}
+
+/* Each navigation item */
+[data-testid="stRadio"] div[role="radiogroup"] label{
+
+    background:#1d1232;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:12px;
+
+    padding:5px 8px;
+
+    transition:.3s;
+
+}
+
+/* Hover */
+[data-testid="stRadio"] div[role="radiogroup"] label:hover{
+
+    background:#7b2ff7;
+
+    transform:translateX(6px);
+
+}
+
+/* Navigation text */
+[data-testid="stRadio"] p{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:white;
+
+}
+
     </style>
     """,
-    unsafe_allow_html=True
-    
+    unsafe_allow_html=True,
 )
 
 
-#First KPI
+st.markdown(
+    """
+<style>
 
-with col1:
-    st.metric(
-        label="📱 Today's Screen Time",
-        value=f"{total_minutes} min",
-        delta="Increased" if total_minutes> goal 
-              else "Decreased",
-        delta_color="inverse" if total_minutes> goal 
-                      else "normal"
-    )
+.hero-subtitle{
+    text-align:center;
+    font-size:24px;
+    color:#d8b4fe !important;
+    font-weight:700;
+    margin-top:-20px;
+    margin-bottom:5px;
+}
 
-#Second KPI
+.hero-tagline{
+    text-align:center;
+    font-size:16px;
+    color:#9ca3af !important;
+    margin-bottom:40px !important;
+}
 
-with col2:
-    st.metric(
-        label="🏆 Most Used App",
-        value=top_app,
-        delta=f"Control on Usage",
-        delta_color="inverse"
-    )
-
-#Third KPI
-
-with col3:
-    st.metric(
-        label="🎯 Goal Difference",
-        value=f"✅{abs(delta)} min"
-               if delta>=0
-               else f"⚠️{abs(delta)} min",
-        delta=f"{delta} min",
-    )
-
-st.divider()
-
-
-st.header("14 Days Screen-Time Trend")
-trend= (
-    df.groupby("Date")["Minutes_Used"].sum()
-)
-st.subheader("📈 Screen Time Trend (14 Days)")
-
-st.line_chart(
-    trend,
-    height=350
+</style>
+""",
+    unsafe_allow_html=True,
 )
 
 
-summary=(today_df
-         .groupby("Category")["Minutes_Used"]
-         .sum())
+st.markdown(
+    """
+<div class="hero-subtitle">
+🔮 AI Powered Digital Wellbeing Dashboard
+</div>
 
-summary_text=summary.to_string()
+<div class="hero-tagline">
+Reclaim your time, one mindful day at a time.
+</div>
+""",
+    unsafe_allow_html=True,
+)
 
 
-prompt = f"""
-You are Life-OS AI.
+df = pd.read_csv("screentime.csv")
 
-Today's screen time:
 
-{summary_text}
+st.sidebar.header("Controls 🕹️")
 
-Goal: {goal} min
-Actual: {total_minutes} min
 
-Reply in under 100 words.
+dates = sorted(df["Date"].unique())
+selected_day = st.sidebar.selectbox("Choose date", dates)
 
-Format exactly:
+goal = st.sidebar.slider(
+    "Daily Goal (in minutes)",
+    20,  # min value
+    600,  # max value
+    240,  # default value
+    step=10,
+)
 
-Overall Score:
-Habit Analysis:
-2 Offline Alternatives:
-Motivation:
+st.sidebar.markdown("---")
 
-If Coding is high, appreciate productive work.
+st.sidebar.markdown(
+    """
+    <h2 style="
+        color:white;
+        font-size:28px;
+        font-weight:900;
+        margin-bottom:15px;
+    ">
+    📂 Navigation
+    </h2>
+    """,
+    unsafe_allow_html=True,
+)
 
-If Social Media is high, suggest outdoor or offline activities.
+page = st.sidebar.radio(
+    "",
+    [
+        "🏠 Overview",
+        "🎭 Avatar Companion",
+        "📊 Performance",
+        "📈 Analytics",
+        "🤖 AI Coach",
+    ],
+)
 
-If Entertainment is high, recommend healthier leisure.
 
-Never recommend reducing coding time.
-"""
+today_df = df[df["Date"] == selected_day].reset_index(
+    drop=True
+)  # Reset the index and discard the old one.
+# stores the row which meet the condition and return True
 
-if st.button("🤖 Get AI Advice"):
-    try:
-        with st.spinner("Analyzing your digital habits...🤖"):
-            response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
+summary = today_df.groupby("Category")["Minutes_Used"].sum()
+
+summary_text = summary.to_string()
+
+total_minutes = today_df["Minutes_Used"].sum()  # total screen time
+st.query_params["screen_time"] = total_minutes
+st.query_params["date"] = selected_day
+params = st.query_params
+
+shared_time = params.get("screen_time")
+
+shared_date = params.get("date")
+
+
+def show_usage():
+    coln1, coln2 = st.columns(2)
+    with coln1:
+        st.subheader("📋 Usage")
+
+        if shared_time:
+
+            st.success(f"📢 Shared Screen Time : {shared_time} minutes")
+        elif shared_date:
+            st.success(f"📢 Shared Date : {shared_date}")
+
+        st.info("Copy the browser URL and send it to your accountability partner.")
+
+        st.text_input("Shareable Link", st.query_params)
+
+        with st.expander("📋 View Data"):
+            st.dataframe(today_df)
+    avatar_ai_prompt = f"""
+    You are an AI image prompt engineer.
+
+    Today's screen time summary:
+
+    {summary_text}
+
+    Goal : {goal} minutes
+    Actual : {total_minutes} minutes
+
+    Return ONLY one detailed image prompt.
+
+    If usage is high:
+    Create a guilty looking character.
+
+    If usage is balanced:
+    Create a productive healthy person.
+
+    Maximum 40 words.
+
+    No explanation.
+    """
+
+    avatar_response = client.models.generate_content(
+        model="gemini-2.5-flash", contents=avatar_ai_prompt
+    )
+
+    avatar_prompt = avatar_response.text.strip()
+    encoded_prompt = urllib.parse.quote(avatar_prompt)
+
+    image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}"
+
+    with coln2:
+
+        colm1, colm2, colm3 = st.columns([1, 6, 1])
+
+        with colm2:
+            st.subheader("🎭 Life-OS Companion")
+            st.markdown(
+                "<div style='text-align:center;'>"
+                "<p style='color:#c084fc;'>"
+                "Put the phone down and take a walk."
+                "</p></div>",
+                unsafe_allow_html=True,
             )
+            try:
+                st.image(image_url, width=220)
+                if total_minutes > goal + 180:
 
-            advice = response.text
+                    caption = "🧟 Doomscroll Zombie"
 
-            if total_minutes > goal:
-                st.warning(advice)
-            else:
-                st.info(advice)
+                    message = "Take a walk without your phone."
 
-    except Exception as e:
-        st.toast("Unable to generate AI advice.")
+                elif total_minutes > goal:
+
+                    caption = "😴 Distracted Student"
+
+                    message = "Reduce social media by 30 minutes."
+
+                else:
+
+                    caption = "🛡️ Focus Warrior"
+
+                    message = "Excellent balance today!"
+
+                st.success(caption)
+
+                st.caption(message)
+            except:
+                st.toast("Avatar Can't be generated")
+
+    st.divider()
+
+
+top_app = today_df.groupby("App_Name")["Minutes_Used"].sum().idxmax()
+
+delta = goal - total_minutes
+
+
+def show_kpi():
+    st.header("Your Key Performance:")
+
+    # creating columns
+    col1, col2, col3 = st.columns(3)
+
+    # First KPI
+
+    with col1:
+        st.metric(
+            label="📱 Today's Screen Time",
+            value=f"{total_minutes} min",
+            delta="Increased" if total_minutes > goal else "Decreased",
+            delta_color="inverse" if total_minutes > goal else "normal",
+        )
+
+    # Second KPI
+
+    with col2:
+        st.metric(
+            label="🏆 Most Used App",
+            value=top_app,
+            delta=f"Control on Usage",
+            delta_color="inverse",
+        )
+
+    # Third KPI
+
+    with col3:
+        st.metric(
+            label="🎯 Goal Difference",
+            value=f"✅{abs(delta)} min" if delta >= 0 else f"⚠️{abs(delta)} min",
+            delta=f"{delta} min",
+        )
+
+    st.divider()
+
+
+def show_graph():
+    st.header("14 Days Screen-Time Trend")
+    trend = df.groupby("Date")["Minutes_Used"].sum()
+    st.subheader("📈 Screen Time Trend (14 Days)")
+
+    st.line_chart(trend, height=350)
+
+
+def show_ai():
+
+    prompt = f"""
+    You are Life-OS AI.
+
+    Today's screen time:
+
+    {summary_text}
+
+    Goal: {goal} min
+    Actual: {total_minutes} min
+
+    Reply in under 100 words.
+
+    Format exactly:
+
+    Overall Score:
+    Habit Analysis:
+    2 Offline Alternatives:
+    Motivation:
+
+    If Coding is high, appreciate productive work.
+
+    If Social Media is high, suggest outdoor or offline activities.
+
+    If Entertainment is high, recommend healthier leisure.
+
+    Never recommend reducing coding time.
+    """
+
+    if st.button("🤖 Get AI Advice"):
+        try:
+            with st.spinner("Analyzing your digital habits...🤖"):
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash", contents=prompt
+                )
+
+                advice = response.text
+
+                if total_minutes > goal:
+                    st.warning(advice)
+                else:
+                    st.info(advice)
+
+        except Exception as e:
+            st.toast("Unable to generate AI advice.")
+
+
+if page == "🏠 Overview":
+    show_usage()
+    show_kpi()
+    show_graph()
+    show_ai()
+
+
+elif page == "🎭 Avatar Companion":
+    show_usage()
+
+elif page == "📊 Performance":
+    show_kpi()
+
+elif page == "📈 Analytics":
+    show_graph()
+
+elif page == "🤖 AI Coach":
+    show_ai()
 
 st.divider()
 
 st.caption(
     "🧠 Life-OS | AI Builder Internship Project | Powered by Gemini & Streamlit| Developer- Bhoomi Singhal"
 )
-
