@@ -198,7 +198,7 @@ streamlit run app.py
 
 🔗 **Live Application**
 
-> https://YOUR_STREAMLIT_LINK.streamlit.app
+> https://lifeos--appproject.streamlit.app/?screen_time=795&date=2026-07-18
 
 ---
 
