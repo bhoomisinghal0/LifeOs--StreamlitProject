@@ -194,7 +194,11 @@ streamlit run app.py
 
 ---
 
+# 🌐 Live Demo
 
+🔗 **Live Application**
+
+> https://lifeos--appproject.streamlit.app/?screen_time=795&date=2026-07-18
 
 ---
 
