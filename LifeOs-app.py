@@ -49,7 +49,7 @@ st.markdown(
 
     section[data-testid="stSidebar"]{
 
-     padding-top:0px;
+     padding-top:-50px !important;
 
      padding-left:18px;
 
@@ -58,14 +58,14 @@ st.markdown(
     }
 
     div[data-testid="stSelectbox"]{
-margin-top:10px;
-margin-bottom:10px;
+margin-top:0px;
+margin-bottom:0px;
 
 }
 
 section[data-testid="stSidebar"] h2{
 
-font-size:32px;
+font-size:22px;
 
 font-weight:900;
 
@@ -89,7 +89,7 @@ div[data-testid="stSlider"]{
 
 margin-top:0px;
 
-margin-bottom:0px;
+margin-bottom:-30px;
 
 }
     
@@ -101,7 +101,7 @@ margin-bottom:0px;
     }
 
     /* Dashboard Headers with subtle Violet text shadow */
-     h2, h3 {
+     h5, h2, h3 {
         color: #ffffff !important;
         font-family: 'Inter', sans-serif;
         font-weight: 700 !important;
@@ -114,8 +114,9 @@ margin-bottom:0px;
         color: #ffffff !important;
         font-style:italic;
         font-family:'Parisienne', cursive;
-        font-size:70px !important;
+        font-size:50px !important;
         text-align:center;
+        text-decoration: underline;
         font-weight: 1000 !important;
         text-shadow: 0 0 10px rgba(44, 1, 82, 0.3);
         margin-top:0px !important;
@@ -233,7 +234,7 @@ margin-bottom:0px;
 
     border-radius:12px;
 
-    padding:5px 8px;
+    padding:2px 8px;
 
     transition:.3s;
 
@@ -248,16 +249,7 @@ margin-bottom:0px;
 
 }
 
-/* Navigation text */
-[data-testid="stRadio"] p{
 
-    font-size:18px;
-
-    font-weight:700;
-
-    color:white;
-
-}
 
     </style>
     """,
@@ -326,14 +318,18 @@ st.sidebar.markdown("---")
 
 st.sidebar.markdown(
     """
-    <h2 style="
-        color:white;
-        font-size:28px;
+    <h5 style="
+        font-size:18px;
         font-weight:900;
-        margin-bottom:15px;
+        margin-bottom:-20px;
+        margin-top: -20px;
+        color:#ffffff;
+        text-shadow:
+        0 0 8px #b5179e,
+        0 0 18px #7209b7;
     ">
     📂 Navigation
-    </h2>
+    </h5>
     """,
     unsafe_allow_html=True,
 )
@@ -382,7 +378,12 @@ def show_usage():
 
         st.info("Copy the browser URL and send it to your accountability partner.")
 
-        st.text_input("Shareable Link", st.query_params)
+        share_url = (
+            f"https://lifeos--appproject.streamlit.app/"
+            f"?screen_time={total_minutes}&date={selected_day}"
+        )
+
+        st.text_input("Shareable Link", share_url)
 
         with st.expander("📋 View Data"):
             st.dataframe(today_df)
@@ -420,7 +421,7 @@ def show_usage():
 
     with coln2:
 
-        colm1, colm2, colm3 = st.columns([1, 6, 1])
+        colm1, colm2, colm3 = st.columns([1, 8, 1])
 
         with colm2:
             st.subheader("🎭 Life-OS Companion")
