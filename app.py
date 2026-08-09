@@ -163,8 +163,7 @@ margin-bottom:-30px;
      }
     
     [data-testid="stMetricValue"],
-[data-testid="stMetricLabel"],
-[data-testid="stMetricDelta"] {
+[data-testid="stMetricLabel"] {
     color: #ffffff !important;
     font-weight: 800 !important;
 }

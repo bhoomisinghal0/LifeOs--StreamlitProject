@@ -24,12 +24,14 @@ for day in range(14):
     for app_name, category in apps:
         minutes = random.randint(20, 240)
 
-        data.append({
-            "Date": current_date,
-            "App_Name": app_name,
-            "Category": category,
-            "Minutes_Used": minutes
-        })
+        data.append(
+            {
+                "Date": current_date,
+                "App_Name": app_name,
+                "Category": category,
+                "Minutes_Used": minutes,
+            }
+        )
 
 # Create DataFrame
 df = pd.DataFrame(data)
