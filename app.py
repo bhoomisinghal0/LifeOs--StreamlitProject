@@ -168,6 +168,8 @@ margin-bottom:-30px;
     font-weight: 800 !important;
 }
 
+
+
     /*Glowing Neon Interactive Buttons */
     .stButton>button {
         background: linear-gradient(90deg, #7209b7, #b5179e) !important;
@@ -206,12 +208,6 @@ margin-bottom:-30px;
     flex: 1;
     display: flex;
     flex-direction: column;
-    }
-
-    /* Force inner cards to fill the expanded space */
-    [data-testid="stMetric"] {
-    height: 100%;
-    flex: 1;
     }
     
     /* Hide radio label */
@@ -386,29 +382,23 @@ def show_usage():
 
         with st.expander("📋 View Data"):
             st.dataframe(today_df)
-    avatar_ai_prompt = f"""
-    You are an AI image prompt engineer.
-
-    Today's screen time summary:
-
-    {summary_text}
-
-    Goal : {goal} minutes
-    Actual : {total_minutes} minutes
-
-    Return ONLY one detailed image prompt.
-
-    If usage is high:
-    Create a guilty looking character.
-
-    If usage is balanced:
-    Create a productive healthy person.
-
-    Maximum 40 words.
-
-    No explanation.
-    """
-
+    if total_minutes > goal:
+        avatar_ai_prompt = f"""
+        Create a detailed image prompt for a character who looks slightly guilty and regretful
+        after spending too much time on electronic devices.
+        The character should have a thoughtful expression and a subtle sense of disappointment.
+        No text, no words, no electronic device visible.
+        Maximum 40 words.
+        """
+    else:
+        avatar_ai_prompt = f"""
+        Create a confident heroic knight standing proudly in beautiful natural greenery.
+        The knight is wearing detailed full plate armor, looking powerful, calm, and victorious.
+        No electronic devices anywhere in the scene.
+        Surrounded by lush green nature, trees, soft natural light, cinematic fantasy atmosphere.
+        No text, no words.
+        Maximum 40 words.
+        """
     avatar_response = client.models.generate_content(
         model="gemini-2.5-flash", contents=avatar_ai_prompt
     )
@@ -424,13 +414,6 @@ def show_usage():
 
         with colm2:
             st.subheader("🎭 Life-OS Companion")
-            st.markdown(
-                "<div style='text-align:center;'>"
-                "<p style='color:#c084fc;'>"
-                "Put the phone down and take a walk."
-                "</p></div>",
-                unsafe_allow_html=True,
-            )
             try:
                 st.image(image_url, width=220)
                 if total_minutes > goal + 180:
