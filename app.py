@@ -425,7 +425,7 @@ def show_usage():
         Daily goal: {goal} minutes
 
         Create a tired and distracted student sitting at a study desk with a
-        glowing smartphone nearby. Show a slightly exhausted facial expression,
+        glowing smartphone nearby and no copy/notebook having only the 'glowing phone' in his hands making him hyponotized. Show a slightly exhausted facial expression,
         slouched posture, dim surroundings and the feeling of excessive digital
         distraction.
 
