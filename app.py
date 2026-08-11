@@ -384,70 +384,59 @@ def show_usage():
 
         with st.expander("📋 View Data"):
             st.dataframe(today_df)
+    
+    if total_minutes < goal:
 
-    avatar_ai_prompt = f"""
-    You are a professional cinematic AI image prompt engineer.
+        avatar_ai_prompt = f"""
+        Create ONE highly detailed cinematic image-generation prompt.
 
-    Your job is to convert the user's digital wellbeing data into ONE highly detailed
-    visual prompt for an image generation model.
+        The user has maintained a healthy digital balance:
+        Actual screen time: {total_minutes} minutes
+        Daily goal: {goal} minutes
 
-    DIGITAL WELLBEING DATA:
-    Screen-time breakdown:
-    {summary_text}
+        Create a powerful Focus Warrior surrounded by beautiful nature.
+        The warrior represents discipline, balance, focus and healthy digital
+        wellbeing.
 
-    Daily goal: {goal} minutes
-    Actual screen time: {total_minutes} minutes
+        Show a young fantasy warrior standing peacefully in a lush green forest,
+        surrounded by tall trees, distant mountains, grass, flowers and soft
+        sunlight filtering through the trees. The warrior has elegant detailed
+        armor, a calm confident expression and a strong but peaceful posture.
+        Add subtle magical elements such as glowing particles and soft atmospheric
+        mist. Use cinematic natural lighting, realistic textures, dramatic depth,
+        wide-angle composition and professional fantasy concept-art quality.
 
-    FIRST determine the character's emotional state:
+        The mood should feel peaceful, victorious, balanced and inspiring.
 
-    - If actual screen time is more than 180 minutes above the goal:
-    portray a tired, distracted, overwhelmed student who has spent too much time
-    looking at a smartphone.
+        No smartphone focus, no text, no logos, no UI, no statistics and no
+        multiple scenes.
 
-    - If actual screen time is above the goal but not more than 180 minutes:
-    portray a slightly tired and distracted student who realizes they should
-    reduce unnecessary screen time.
+        Return ONLY the final image prompt.
+        Maximum 150 words.
+        """
 
-    - If actual screen time is equal to or below the goal:
-    portray a focused, energetic and productive student who has a healthy
-    relationship with technology.
+    else:
 
-    IMAGE REQUIREMENTS:
+        avatar_ai_prompt = f"""
+        Create ONE highly detailed cinematic image-generation prompt.
 
-    Create a visually rich cinematic scene.
+        The user has exceeded their digital wellbeing goal:
+        Actual screen time: {total_minutes} minutes
+        Daily goal: {goal} minutes
 
-    Describe ALL of these elements:
-    1. Main character — approximate age, gender-neutral appearance, clothing,
-    facial expression, body posture and emotion.
-    2. Environment — detailed bedroom, study room, desk or outdoor setting that
-    matches the character's state.
-    3. Smartphone — clearly visible and naturally integrated into the scene.
-    4. Lighting — specify cinematic lighting, direction, intensity and mood.
-    5. Background — meaningful environmental details related to studying,
-    productivity and digital wellbeing.
-    6. Color palette — describe the dominant colors and overall atmosphere.
-    7. Camera — specify camera angle, framing, depth of field and perspective.
-    8. Visual style — polished cinematic digital illustration, high detail,
-    professional concept-art quality.
-    9. Composition — make the character the clear focal point.
-    10. Mood — communicate the digital wellbeing state visually without using text.
+        Create a tired and distracted student sitting at a study desk with a
+        glowing smartphone nearby. Show a slightly exhausted facial expression,
+        slouched posture, dim surroundings and the feeling of excessive digital
+        distraction.
 
-    IMPORTANT:
-    - Create ONE single scene.
-    - Make the image visually interesting and emotionally expressive.
-    - Use specific visual details instead of generic words like "nice", "beautiful"
-    or "good".
-    - Do NOT create a collage.
-    - Do NOT create multiple panels.
-    - Do NOT include charts, graphs, statistics or UI.
-    - Do NOT include captions, labels, logos or readable text.
-    - Do NOT describe the image generation process.
-    - Do NOT explain your answer.
-    - Return ONLY the final image-generation prompt.
-    - Maximum 150 words.
+        Use cinematic lighting, realistic environmental details, depth of field,
+        professional digital art and an emotionally expressive composition.
 
-    The final prompt must be directly usable by Pollinations.
-    """
+        No text, logos, UI, statistics or multiple scenes.
+
+        Return ONLY the final image prompt.
+        Maximum 150 words.
+        """
     avatar_response = client.chat.completions.create(
         model="google/gemini-2.5-flash",
         messages=[{"role": "user", "content": avatar_ai_prompt}],
