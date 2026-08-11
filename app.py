@@ -422,23 +422,35 @@ def show_usage():
         avatar_ai_prompt = f"""
         Create ONE highly detailed cinematic image-generation prompt.
 
-        The character is a terrifying but visually interesting zombie sitting and
-        mindlessly scrolling on a glowing smartphone.
+        MAIN SUBJECT:
+        A terrifying but visually interesting zombie sitting and mindlessly scrolling
+        on a smartphone.
 
-        Show a zombie with pale decayed skin, messy hair, tired hollow eyes and a
-        slouched posture, completely absorbed in the phone. The zombie should look
-        addicted to endless scrolling. Surround it with a dark, slightly chaotic
-        environment, scattered objects, eerie atmosphere and the cold blue glow of
-        the smartphone illuminating its face.
+        IMPORTANT COMPOSITION:
+        The smartphone MUST be clearly visible in the zombie's hands and MUST be one
+        of the two main focal points of the image. Show the zombie looking directly at
+        the smartphone screen while actively scrolling with one finger. The phone
+        screen should be large, bright and clearly recognizable.
 
-        Use dramatic cinematic lighting, strong shadows, atmospheric fog, detailed
-        textures, depth of field, dynamic composition and professional dark fantasy
-        digital-art quality.
+        CHARACTER:
+        Show a zombie with pale decayed skin, messy hair, hollow tired eyes and a
+        slouched posture. Its face should be illuminated by the bright blue glow
+        coming directly from the smartphone screen.
 
-        The smartphone must be clearly visible and the zombie's attention must be
-        focused on scrolling.
+        ENVIRONMENT:
+        Place the zombie in a dark, slightly chaotic environment with scattered
+        objects, eerie atmosphere and atmospheric fog. The glowing smartphone should
+        create a strong pool of blue light around the zombie.
 
-        No text, no captions, no logos, no UI, no statistics and no multiple scenes.
+        VISUAL STYLE:
+        Dramatic cinematic lighting, strong shadows, detailed textures, atmospheric
+        fog, realistic depth of field, dynamic camera composition and professional
+        dark-fantasy digital-art quality.
+
+        The zombie's hands, smartphone and glowing screen must be clearly visible.
+        Do NOT hide, remove, obscure or replace the smartphone.
+
+        No text, captions, logos, UI, statistics or multiple scenes.
 
         Return ONLY the final image-generation prompt.
         Maximum 150 words.
