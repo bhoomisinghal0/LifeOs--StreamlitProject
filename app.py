@@ -404,6 +404,7 @@ def show_usage():
     avatar_response = client.chat.completions.create(
         model="google/gemini-2.5-flash",
         messages=[{"role": "user", "content": avatar_ai_prompt}],
+        max_tokens=500
     )
 
     avatar_prompt = avatar_response.choices[0].message.content.strip()
@@ -533,7 +534,7 @@ def show_ai():
                 response = client.chat.completions.create(
                     model="google/gemini-2.5-flash",
                     messages=[{"role": "user", "content": prompt}],
-                    max_tokens=500,
+                    max_tokens=500
                 )
 
                 advice = response.choices[0].message.content
