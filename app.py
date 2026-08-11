@@ -385,7 +385,7 @@ def show_usage():
         with st.expander("📋 View Data"):
             st.dataframe(today_df)
     
-    if total_minutes < goal:
+    if total_minutes < goal :
 
         avatar_ai_prompt = f"""
         Create ONE highly detailed cinematic image-generation prompt.
@@ -417,7 +417,7 @@ def show_usage():
         Maximum 150 words.
         """
 
-    else:
+    elif total_minutes > goal :
 
         avatar_ai_prompt = f"""
         Create ONE highly detailed cinematic image-generation prompt.
