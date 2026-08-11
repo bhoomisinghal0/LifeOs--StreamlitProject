@@ -390,28 +390,30 @@ def show_usage():
         avatar_ai_prompt = f"""
         Create ONE highly detailed cinematic image-generation prompt.
 
-        The user has maintained a healthy digital balance:
-        Actual screen time: {total_minutes} minutes
-        Daily goal: {goal} minutes
+        Create a powerful superhero-style warrior standing confidently in a beautiful
+        natural environment filled with colorful flowers, lush green plants and
+        peaceful scenery.
 
-        Create a powerful Focus Warrior surrounded by beautiful nature.
-        The warrior represents discipline, balance, focus and healthy digital
-        wellbeing.
+        The warrior should look strong, heroic, disciplined and balanced, wearing
+        detailed fantasy-inspired superhero armor with elegant metallic textures and
+        subtle glowing elements. Give the warrior a confident but peaceful expression
+        and a powerful heroic stance.
 
-        Show a young fantasy warrior standing peacefully in a lush green forest,
-        surrounded by tall trees, distant mountains, grass, flowers and soft
-        sunlight filtering through the trees. The warrior has elegant detailed
-        armor, a calm confident expression and a strong but peaceful posture.
-        Add subtle magical elements such as glowing particles and soft atmospheric
-        mist. Use cinematic natural lighting, realistic textures, dramatic depth,
-        wide-angle composition and professional fantasy concept-art quality.
+        Surround the warrior with blooming flowers, green fields, tall trees,
+        mountains in the distance, butterflies and warm golden sunlight filtering
+        through the environment. Add subtle magical particles and a soft atmospheric
+        glow to make the scene feel inspirational and extraordinary.
 
-        The mood should feel peaceful, victorious, balanced and inspiring.
+        Use cinematic lighting, dramatic perspective, realistic textures, depth of
+        field, wide-angle composition and professional high-detail fantasy
+        concept-art quality.
 
-        No smartphone focus, no text, no logos, no UI, no statistics and no
-        multiple scenes.
+        The overall feeling should be peaceful, victorious, powerful and connected
+        with nature.
 
-        Return ONLY the final image prompt.
+        No text, no captions, no logos, no UI, no statistics and no multiple scenes.
+
+        Return ONLY the final image-generation prompt.
         Maximum 150 words.
         """
 
@@ -420,21 +422,25 @@ def show_usage():
         avatar_ai_prompt = f"""
         Create ONE highly detailed cinematic image-generation prompt.
 
-        The user has exceeded their digital wellbeing goal:
-        Actual screen time: {total_minutes} minutes
-        Daily goal: {goal} minutes
+        The character is a terrifying but visually interesting zombie sitting and
+        mindlessly scrolling on a glowing smartphone.
 
-        Create a tired and distracted student sitting at a study desk with a
-        glowing smartphone nearby and no copy/notebook having only the 'glowing phone' in his hands making him hyponotized. Show a slightly exhausted facial expression,
-        slouched posture, dim surroundings and the feeling of excessive digital
-        distraction.
+        Show a zombie with pale decayed skin, messy hair, tired hollow eyes and a
+        slouched posture, completely absorbed in the phone. The zombie should look
+        addicted to endless scrolling. Surround it with a dark, slightly chaotic
+        environment, scattered objects, eerie atmosphere and the cold blue glow of
+        the smartphone illuminating its face.
 
-        Use cinematic lighting, realistic environmental details, depth of field,
-        professional digital art and an emotionally expressive composition.
+        Use dramatic cinematic lighting, strong shadows, atmospheric fog, detailed
+        textures, depth of field, dynamic composition and professional dark fantasy
+        digital-art quality.
 
-        No text, logos, UI, statistics or multiple scenes.
+        The smartphone must be clearly visible and the zombie's attention must be
+        focused on scrolling.
 
-        Return ONLY the final image prompt.
+        No text, no captions, no logos, no UI, no statistics and no multiple scenes.
+
+        Return ONLY the final image-generation prompt.
         Maximum 150 words.
         """
     avatar_response = client.chat.completions.create(
