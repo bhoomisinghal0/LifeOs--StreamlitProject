@@ -533,6 +533,7 @@ def show_ai():
                 response = client.chat.completions.create(
                     model="google/gemini-2.5-flash",
                     messages=[{"role": "user", "content": prompt}],
+                    max_tokens=500,
                 )
 
                 advice = response.choices[0].message.content
