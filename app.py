@@ -1,13 +1,15 @@
 import streamlit as st
 import pandas as pd
-from google import genai
+from openai import OpenAI
 from dotenv import load_dotenv
 import os
 import urllib.parse  # help in building pollination url
 
 load_dotenv()
 
-client = genai.Client(api_key=os.getenv("API_KEY2"))
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1", api_key=os.getenv("OPENROUTER_API_KEY")
+)
 st.set_page_config(page_title="Life-OS", page_icon="🧠", layout="wide")
 
 
@@ -399,11 +401,12 @@ def show_usage():
         No text, no words.
         Maximum 40 words.
         """
-    avatar_response = client.models.generate_content(
-        model="gemini-2.5-flash", contents=avatar_ai_prompt
+    avatar_response = client.chat.completions.create(
+        model="google/gemini-2.5-flash",
+        messages=[{"role": "user", "content": avatar_ai_prompt}],
     )
 
-    avatar_prompt = avatar_response.text.strip()
+    avatar_prompt = avatar_response.choices[0].message.content.strip()
     encoded_prompt = urllib.parse.quote(avatar_prompt)
 
     image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}"
@@ -527,11 +530,12 @@ def show_ai():
     if st.button("🤖 Get AI Advice"):
         try:
             with st.spinner("Analyzing your digital habits...🤖"):
-                response = client.models.generate_content(
-                    model="gemini-2.5-flash", contents=prompt
+                response = client.chat.completions.create(
+                    model="google/gemini-2.5-flash",
+                    messages=[{"role": "user", "content": prompt}],
                 )
 
-                advice = response.text
+                advice = response.choices[0].message.content
 
                 if total_minutes > goal:
                     st.warning(advice)
