@@ -384,23 +384,70 @@ def show_usage():
 
         with st.expander("📋 View Data"):
             st.dataframe(today_df)
-    if total_minutes > goal:
-        avatar_ai_prompt = f"""
-        Create a detailed image prompt for a character who looks slightly guilty and regretful
-        after spending too much time on electronic devices.
-        The character should have a thoughtful expression and a subtle sense of disappointment.
-        No text, no words, no electronic device visible.
-        Maximum 40 words.
-        """
-    else:
-        avatar_ai_prompt = f"""
-        Create a confident heroic knight standing proudly in beautiful natural greenery.
-        The knight is wearing detailed full plate armor, looking powerful, calm, and victorious.
-        No electronic devices anywhere in the scene.
-        Surrounded by lush green nature, trees, soft natural light, cinematic fantasy atmosphere.
-        No text, no words.
-        Maximum 40 words.
-        """
+
+    avatar_ai_prompt = f"""
+    You are a professional cinematic AI image prompt engineer.
+
+    Your job is to convert the user's digital wellbeing data into ONE highly detailed
+    visual prompt for an image generation model.
+
+    DIGITAL WELLBEING DATA:
+    Screen-time breakdown:
+    {summary_text}
+
+    Daily goal: {goal} minutes
+    Actual screen time: {total_minutes} minutes
+
+    FIRST determine the character's emotional state:
+
+    - If actual screen time is more than 180 minutes above the goal:
+    portray a tired, distracted, overwhelmed student who has spent too much time
+    looking at a smartphone.
+
+    - If actual screen time is above the goal but not more than 180 minutes:
+    portray a slightly tired and distracted student who realizes they should
+    reduce unnecessary screen time.
+
+    - If actual screen time is equal to or below the goal:
+    portray a focused, energetic and productive student who has a healthy
+    relationship with technology.
+
+    IMAGE REQUIREMENTS:
+
+    Create a visually rich cinematic scene.
+
+    Describe ALL of these elements:
+    1. Main character — approximate age, gender-neutral appearance, clothing,
+    facial expression, body posture and emotion.
+    2. Environment — detailed bedroom, study room, desk or outdoor setting that
+    matches the character's state.
+    3. Smartphone — clearly visible and naturally integrated into the scene.
+    4. Lighting — specify cinematic lighting, direction, intensity and mood.
+    5. Background — meaningful environmental details related to studying,
+    productivity and digital wellbeing.
+    6. Color palette — describe the dominant colors and overall atmosphere.
+    7. Camera — specify camera angle, framing, depth of field and perspective.
+    8. Visual style — polished cinematic digital illustration, high detail,
+    professional concept-art quality.
+    9. Composition — make the character the clear focal point.
+    10. Mood — communicate the digital wellbeing state visually without using text.
+
+    IMPORTANT:
+    - Create ONE single scene.
+    - Make the image visually interesting and emotionally expressive.
+    - Use specific visual details instead of generic words like "nice", "beautiful"
+    or "good".
+    - Do NOT create a collage.
+    - Do NOT create multiple panels.
+    - Do NOT include charts, graphs, statistics or UI.
+    - Do NOT include captions, labels, logos or readable text.
+    - Do NOT describe the image generation process.
+    - Do NOT explain your answer.
+    - Return ONLY the final image-generation prompt.
+    - Maximum 150 words.
+
+    The final prompt must be directly usable by Pollinations.
+    """
     avatar_response = client.chat.completions.create(
         model="google/gemini-2.5-flash",
         messages=[{"role": "user", "content": avatar_ai_prompt}],
