@@ -455,48 +455,55 @@ def show_usage():
         Return ONLY the final image-generation prompt.
         Maximum 150 words.
         """
-    avatar_response = client.chat.completions.create(
+    try:
+        avatar_response = client.chat.completions.create(
         model="google/gemini-2.5-flash",
         messages=[{"role": "user", "content": avatar_ai_prompt}],
         max_tokens=500
-    )
+        )
 
-    avatar_prompt = avatar_response.choices[0].message.content.strip()
-    encoded_prompt = urllib.parse.quote(avatar_prompt)
+        avatar_prompt = avatar_response.choices[0].message.content.strip()
+        encoded_prompt = urllib.parse.quote(avatar_prompt)
 
-    image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}"
+        image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}"
+    
 
-    with coln2:
+        with coln2:
 
-        colm1, colm2, colm3 = st.columns([1, 8, 1])
+            colm1, colm2, colm3 = st.columns([1, 8, 1])
 
-        with colm2:
+            with colm2:
+                st.subheader("🎭 Life-OS Companion")
+                try:
+                    st.image(image_url, width=220)
+                    if total_minutes > goal + 180:
+
+                        caption = "🧟 Doomscroll Zombie"
+
+                        message = "Take a walk without your phone."
+
+                    elif total_minutes > goal:
+
+                        caption = "😴 Distracted Student"
+
+                        message = "Reduce social media by 30 minutes."
+
+                    else:
+
+                        caption = "🛡️ Focus Warrior"
+
+                        message = "Excellent balance today!"
+
+                    st.success(caption)
+
+                    st.caption(message)
+                except:
+                    st.toast("Avatar Can't be generated")
+    except Exception as e:
+        with coln2:
             st.subheader("🎭 Life-OS Companion")
-            try:
-                st.image(image_url, width=220)
-                if total_minutes > goal + 180:
+            st.info("🎭 Your AI companion is temporarily unavailable. ")
 
-                    caption = "🧟 Doomscroll Zombie"
-
-                    message = "Take a walk without your phone."
-
-                elif total_minutes > goal:
-
-                    caption = "😴 Distracted Student"
-
-                    message = "Reduce social media by 30 minutes."
-
-                else:
-
-                    caption = "🛡️ Focus Warrior"
-
-                    message = "Excellent balance today!"
-
-                st.success(caption)
-
-                st.caption(message)
-            except:
-                st.toast("Avatar Can't be generated")
 
     st.divider()
 
