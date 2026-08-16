@@ -1,0 +1,317 @@
+/* =========================================================
+   LIFE-OS CUSTOM STYLES
+   ========================================================= */
+
+/* ---------- GLOBAL ---------- */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Parisienne&display=swap');
+
+.stApp {
+    background: linear-gradient(
+        135deg,
+        #05050a 0%,
+        #0d0b18 50%,
+        #150a21 100%
+    );
+    color: #f1ecf9;
+    font-family: 'Inter', sans-serif;
+}
+
+
+/* ---------- HEADINGS ---------- */
+
+h1,
+h2,
+h3,
+h4 {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    text-shadow:
+        0 0 10px #7209b7,
+        0 0 20px #b5179e !important;
+    letter-spacing: -0.5px;
+}
+
+h5,
+h2,
+h3 {
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700 !important;
+    text-shadow: 0 0 10px rgba(157, 78, 221, 0.3);
+}
+
+
+/* ---------- CAPTIONS ---------- */
+
+[data-testid="stCaptionContainer"] {
+    color: #e0c2f2 !important;
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(245, 247, 247, 0.6);
+    font-size: 1rem !important;
+}
+
+
+/* ---------- MAIN HEADER ---------- */
+
+h1 {
+    color: #ffffff !important;
+    font-style: italic;
+    font-family: 'Parisienne', cursive;
+    font-size: 50px !important;
+    text-align: center;
+    text-decoration: underline;
+    font-weight: 1000 !important;
+    text-shadow: 0 0 10px rgba(44, 1, 82, 0.3);
+    margin-top: 0px !important;
+    margin-bottom: 15px !important;
+}
+
+
+/* ---------- SIDEBAR ---------- */
+
+section[data-testid="stSidebar"] {
+    background: linear-gradient(
+        180deg,
+        #1f1235 0%,
+        #11071c 60%,
+        #05020a 100%
+    );
+
+    border-right: 2px solid #7b2ff7;
+    box-shadow: 5px 0 25px rgba(123, 47, 247, 0.15);
+}
+
+section[data-testid="stSidebar"] {
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+section[data-testid="stSidebar"] h2 {
+    font-size: 22px;
+    font-weight: 900;
+}
+
+section[data-testid="stSidebar"] .stMarkdown,
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] label {
+    color: #e2d5f3 !important;
+}
+
+
+/* ---------- SIDEBAR SELECTBOX ---------- */
+
+div[data-testid="stSelectbox"] {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+
+/* ---------- SIDEBAR SLIDER ---------- */
+
+div[data-baseweb="slider"] [role="slider"] {
+    background: #a855f7 !important;
+    box-shadow: 0 0 15px #a855f7;
+}
+
+div[data-baseweb="slider"] div {
+    border-radius: 20px;
+}
+
+div[data-testid="stSlider"] {
+    margin-top: 0px;
+    margin-bottom: -30px;
+}
+
+
+/* ---------- HERO ---------- */
+
+.hero-subtitle {
+    text-align: center;
+    font-size: 20px;
+    color: #d8b4fe !important;
+    font-weight: 700;
+    margin-top: -20px;
+    margin-bottom: 5px;
+}
+
+.hero-tagline {
+    text-align: center;
+    font-size: 15px;
+    color: #9ca3af !important;
+    margin-bottom: 40px !important;
+}
+
+
+/* ---------- KPI METRICS ---------- */
+
+[data-testid="stMetric"] {
+    background: linear-gradient(
+        -45deg,
+        #1a0f2e,
+        #2d1457,
+        #4c1d95,
+        #6d28d9,
+        #3b0764
+    );
+
+    background-size: 350% 350%;
+    animation: neonPulse 8s ease infinite;
+
+    border-radius: 16px;
+    padding: 20px;
+
+    border: 1px solid rgba(186, 104, 255, 0.35);
+
+    box-shadow:
+        0 0 12px rgba(123, 47, 247, 0.35),
+        0 0 25px rgba(114, 9, 183, 0.25),
+        inset 0 0 10px rgba(255, 255, 255, 0.03);
+
+    transition: all 0.3s ease;
+}
+
+[data-testid="stMetric"]:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 0 20px rgba(123, 47, 247, 0.6),
+        0 0 40px rgba(181, 23, 158, 0.35);
+}
+
+[data-testid="stMetricValue"]
+ {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 28px !important;
+}
+[data-testid="stMetricLabel"] {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    font-size: 14px !important;
+}
+
+
+/* ---------- KPI ANIMATION ---------- */
+
+@keyframes neonPulse {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+
+/* ---------- BUTTONS ---------- */
+
+.stButton > button {
+    background: linear-gradient(
+        90deg,
+        #7209b7,
+        #b5179e
+    ) !important;
+
+    color: white !important;
+
+    border: none !important;
+    border-radius: 8px !important;
+
+    padding: 20px 34px !important;
+
+    /* Fixed: 60px was unnecessarily huge */
+    font-size: 15px !important;
+
+    font-weight: 700 !important;
+
+    box-shadow:
+        0 0 15px rgba(181, 23, 158, 0.4) !important;
+
+    transition: all 0.3s ease !important;
+}
+
+.stButton > button:hover {
+    box-shadow:
+        0 0 25px #b5179e,
+        0 0 10px #4cc9f0 !important;
+
+    transform: scale(1.03);
+}
+
+
+/* ---------- DATAFRAME ---------- */
+
+.stDataFrame,
+div[data-testid="stTable"] {
+    background: rgba(18, 9, 36, 0.85) !important;
+
+    border: 2px solid #7209b7 !important;
+
+    border-radius: 12px !important;
+
+    padding: 10px !important;
+
+    box-shadow:
+        0 0 20px rgba(114, 9, 183, 0.25) !important;
+}
+
+
+/* ---------- COLUMNS ---------- */
+
+div[data-testid="stHorizontalBlock"] {
+    display: flex;
+    align-items: stretch;
+}
+
+div[data-testid="column"] {
+    display: flex;
+    flex-direction: column;
+}
+
+div[data-testid="column"] > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* ---------- SIDEBAR NAVIGATION ---------- */
+
+/* Hide radio label */
+[data-testid="stRadio"] label {
+    font-size: 0px;
+}
+
+
+/* Space between options */
+[data-testid="stRadio"] > div {
+    gap: 12px;
+}
+
+
+/* Navigation item */
+[data-testid="stRadio"] div[role="radiogroup"] label {
+    background: #1d1232;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: 12px;
+
+    padding: 2px 8px;
+
+    transition: 0.3s;
+}
+
+
+/* Navigation hover */
+[data-testid="stRadio"] div[role="radiogroup"] label:hover {
+    background: #7b2ff7;
+
+    transform: translateX(6px);
+}

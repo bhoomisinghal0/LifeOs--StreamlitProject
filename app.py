@@ -4,6 +4,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os
 import urllib.parse  # help in building pollination url
+from pathlib import Path #for linking css file
 
 load_dotenv()
 
@@ -12,296 +13,54 @@ client = OpenAI(
 )
 st.set_page_config(page_title="Life-OS", page_icon="🧠", layout="wide")
 
+css_path = Path(__file__).parent / "style.css"
+
+with open(css_path, "r", encoding="utf-8") as f:
+    st.markdown(
+        f"<style>{f.read()}</style>",
+        unsafe_allow_html=True
+    )
+
+
+
 
 st.title("🧠 Your Personal Life-OS")
 
-# Injecting Custom CSS to design
 st.markdown(
     """
-     <style>
-    /* Background Canvas: Smooth Dark Indigo to Black Gradient */
-    .stApp {
-        background: linear-gradient(135deg, #05050a 0%, #0d0b18 50%, #150a21 100%);
-        color: #f1ecf9;
-        font-family: 'Inter', sans-serif;
-    }
+    <div class="hero-subtitle">
+        🔮 AI Powered Digital Wellbeing Dashboard
+    </div>
 
-    /* Neon Typography & Captions */
-    h1, h2, h3, h4 {
-        color: #ffffff !important;
-        font-weight: 800 !important;
-        text-shadow: 0 0 10px #7209b7, 0 0 20px #b5179e !important;
-        letter-spacing: -0.5px;
-    }
-
-    [data-testid="stCaptionContainer"] {
-        color: #e0c2f2 !important;
-        font-weight: 600;
-        text-shadow: 0 0 8px rgba(245, 247, 247, 0.6);
-        font-size: 1rem !important;
-    }
-
-    
-    /* Sidebar: Vibrant Purple to Deep Violet Neon Gradient */
-    section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #1f1235 0%, #11071c 60%, #05020a 100%);
-        border-right: 2px solid #7b2ff7;
-        box-shadow: 5px 0 25px rgba(123, 47, 247, 0.15);
-    }
-
-    section[data-testid="stSidebar"]{
-
-     padding-top:-50px !important;
-
-     padding-left:18px;
-
-     padding-right:18px;
-
-    }
-
-    div[data-testid="stSelectbox"]{
-margin-top:0px;
-margin-bottom:0px;
-
-}
-
-section[data-testid="stSidebar"] h2{
-
-font-size:22px;
-
-font-weight:900;
-
-}
-
-div[data-baseweb="slider"] [role="slider"]{
-
-background:#a855f7 !important;
-
-box-shadow:0 0 15px #a855f7;
-
-}
-
-div[data-baseweb="slider"] div{
-
-border-radius:20px;
-
-}
-
-div[data-testid="stSlider"]{
-
-margin-top:0px;
-
-margin-bottom:-30px;
-
-}
-    
-    /* Match Sidebar text elements */
-    section[data-testid="stSidebar"] .stMarkdown, 
-    section[data-testid="stSidebar"] h2, 
-    section[data-testid="stSidebar"] label {
-        color: #e2d5f3 !important;
-    }
-
-    /* Dashboard Headers with subtle Violet text shadow */
-     h5, h2, h3 {
-        color: #ffffff !important;
-        font-family: 'Inter', sans-serif;
-        font-weight: 700 !important;
-        text-shadow: 0 0 10px rgba(157, 78, 221, 0.3);
-    }
-
-    /*Main Header*/
-    @import url('https://fonts.googleapis.com/css2?family=Parisienne&display=swap');
-    h1{
-        color: #ffffff !important;
-        font-style:italic;
-        font-family:'Parisienne', cursive;
-        font-size:50px !important;
-        text-align:center;
-        text-decoration: underline;
-        font-weight: 1000 !important;
-        text-shadow: 0 0 10px rgba(44, 1, 82, 0.3);
-        margin-top:0px !important;
-        
-    }
-    
-    @keyframes neonPulse {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    [data-testid="stMetric"]:hover {
-    transform: translateY(-3px);
-    box-shadow:
-        0 0 20px rgba(123,47,247,0.6),
-        0 0 40px rgba(181,23,158,0.35);
-    }
-
-    [data-testid="stMetric"] {
-    background: linear-gradient(
-        -45deg,
-        #1a0f2e,
-        #2d1457,
-        #4c1d95,
-        #6d28d9,
-        #3b0764
-    );
-
-    background-size: 350% 350%;
-    animation: neonPulse 8s ease infinite;
-
-    border-radius: 16px;
-    padding: 20px;
-
-    border: 1px solid rgba(186, 104, 255, 0.35);
-
-    box-shadow:
-        0 0 12px rgba(123,47,247,0.35),
-        0 0 25px rgba(114,9,183,0.25),
-        inset 0 0 10px rgba(255,255,255,0.03);
-
-    transition: all .3s ease;
-     }
-    
-    [data-testid="stMetricValue"],
-[data-testid="stMetricLabel"] {
-    color: #ffffff !important;
-    font-weight: 800 !important;
-}
-
-
-
-    /*Glowing Neon Interactive Buttons */
-    .stButton>button {
-        background: linear-gradient(90deg, #7209b7, #b5179e) !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 8px !important;
-        padding: 20px 34px !important;
-        font-size: 60px  !important;
-        font-weight: 1000 !important;
-        box-shadow: 0 0 15px rgba(181, 23, 158, 0.4) !important;
-        transition: all 0.3s ease !important;
-    }
-
-    .stButton>button:hover {
-        box-shadow: 0 0 25px #b5179e, 0 0 10px #4cc9f0 !important;
-        transform: scale(1.03);
-    }
-
-    /* Neon Embedded Dataframe Matrix Table */
-    .stDataFrame, div[data-testid="stTable"] {
-        background: rgba(18, 9, 36, 0.85) !important;
-        border: 2px solid #7209b7 !important;
-        border-radius: 12px !important;
-        padding: 10px !important;
-        box-shadow: 0 0 20px rgba(114, 9, 183, 0.25) !important;
-    }
-    div[data-testid="stHorizontalBlock"] {
-    display: flex;
-    align-items: stretch;
-    }
-    div[data-testid="column"] {
-    display: flex;
-    flex-direction: column;
-    }
-    div[data-testid="column"] > div {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    }
-    
-    /* Hide radio label */
-[data-testid="stRadio"] label{
-    font-size:0px;
-}
-
-/* Space between options */
-[data-testid="stRadio"] > div{
-    gap:12px;
-}
-
-/* Each navigation item */
-[data-testid="stRadio"] div[role="radiogroup"] label{
-
-    background:#1d1232;
-
-    border:1px solid rgba(255,255,255,.08);
-
-    border-radius:12px;
-
-    padding:2px 8px;
-
-    transition:.3s;
-
-}
-
-/* Hover */
-[data-testid="stRadio"] div[role="radiogroup"] label:hover{
-
-    background:#7b2ff7;
-
-    transform:translateX(6px);
-
-}
-
-
-
-    </style>
+    <div class="hero-tagline">
+        Reclaim your time, one mindful day at a time.
+    </div>
     """,
     unsafe_allow_html=True,
 )
 
 
-st.markdown(
-    """
-<style>
-
-.hero-subtitle{
-    text-align:center;
-    font-size:24px;
-    color:#d8b4fe !important;
-    font-weight:700;
-    margin-top:-20px;
-    margin-bottom:5px;
-}
-
-.hero-tagline{
-    text-align:center;
-    font-size:16px;
-    color:#9ca3af !important;
-    margin-bottom:40px !important;
-}
-
-</style>
-""",
-    unsafe_allow_html=True,
-)
-
-
-st.markdown(
-    """
-<div class="hero-subtitle">
-🔮 AI Powered Digital Wellbeing Dashboard
-</div>
-
-<div class="hero-tagline">
-Reclaim your time, one mindful day at a time.
-</div>
-""",
-    unsafe_allow_html=True,
-)
-
 
 df = pd.read_csv("screentime.csv")
+
+#initializing st.session_state
+if "selected_day" not in st.session_state:
+    st.session_state.selected_day= df["Date"].iloc[0]
+if "goal" not in st.session_state:
+    st.session_state.goal=240
+if"ai_advice" not in st.session_state:
+    st.session_state.ai_advice=None
+if "avatar_day" not in st.session_state:
+    st.session_state.avatar_day = None
+if "avatar_url" not in st.session_state:
+    st.session_state.avatar_url = None
 
 
 st.sidebar.header("Controls 🕹️")
 
 
 dates = sorted(df["Date"].unique())
-selected_day = st.sidebar.selectbox("Choose date", dates)
+selected_day = st.sidebar.selectbox("Choose date", dates, key="selected_day")
 
 goal = st.sidebar.slider(
     "Daily Goal (in minutes)",
@@ -309,6 +68,7 @@ goal = st.sidebar.slider(
     600,  # max value
     240,  # default value
     step=10,
+    key="goal"
 )
 
 st.sidebar.markdown("---")
@@ -332,7 +92,7 @@ st.sidebar.markdown(
 )
 
 page = st.sidebar.radio(
-    "",
+    "Navigation",
     [
         "🏠 Overview",
         "🎭 Avatar Companion",
@@ -340,6 +100,7 @@ page = st.sidebar.radio(
         "📈 Analytics",
         "🤖 AI Coach",
     ],
+    label_visibility="collapsed"
 )
 
 
@@ -384,98 +145,120 @@ def show_usage():
 
         with st.expander("📋 View Data"):
             st.dataframe(today_df)
-    
-    if total_minutes < goal :
 
-        avatar_ai_prompt = f"""
-        Create ONE highly detailed cinematic image-generation prompt.
 
-        Create a powerful superhero-style warrior standing confidently in a beautiful
-        natural environment filled with colorful flowers, lush green plants and
-        peaceful scenery.
+    #to check if new avatar required to create so as API does not exhaust
+                
+    needs_new_avatar = (
+    st.session_state.avatar_url is None
+    or st.session_state.avatar_day != selected_day
+    )
 
-        The warrior should look strong, heroic, disciplined and balanced, wearing
-        detailed fantasy-inspired superhero armor with elegant metallic textures and
-        subtle glowing elements. Give the warrior a confident but peaceful expression
-        and a powerful heroic stance.
+    if needs_new_avatar:
+        try:
+            if total_minutes <= goal :
+                
 
-        Surround the warrior with blooming flowers, green fields, tall trees,
-        mountains in the distance, butterflies and warm golden sunlight filtering
-        through the environment. Add subtle magical particles and a soft atmospheric
-        glow to make the scene feel inspirational and extraordinary.
+                avatar_ai_prompt = f"""
+                Create ONE highly detailed cinematic image-generation prompt.
 
-        Use cinematic lighting, dramatic perspective, realistic textures, depth of
-        field, wide-angle composition and professional high-detail fantasy
-        concept-art quality.
+                Create a powerful superhero-style warrior standing confidently in a beautiful
+                natural environment filled with colorful flowers, lush green plants and
+                peaceful scenery.
 
-        The overall feeling should be peaceful, victorious, powerful and connected
-        with nature.
+                The warrior should look strong, heroic, disciplined and balanced, wearing
+                detailed fantasy-inspired superhero armor with elegant metallic textures and
+                subtle glowing elements. Give the warrior a confident but peaceful expression
+                and a powerful heroic stance.
 
-        No text, no captions, no logos, no UI, no statistics and no multiple scenes.
+                Surround the warrior with blooming flowers, green fields, tall trees,
+                mountains in the distance, butterflies and warm golden sunlight filtering
+                through the environment. Add subtle magical particles and a soft atmospheric
+                glow to make the scene feel inspirational and extraordinary.
 
-        Return ONLY the final image-generation prompt.
-        Maximum 150 words.
-        """
+                Use cinematic lighting, dramatic perspective, realistic textures, depth of
+                field, wide-angle composition and professional high-detail fantasy
+                concept-art quality.
 
-    elif total_minutes > goal :
+                The overall feeling should be peaceful, victorious, powerful and connected
+                with nature.
 
-        avatar_ai_prompt = f"""
-        Create ONE highly detailed cinematic image-generation prompt.
+                No text, no captions, no logos, no UI, no statistics and no multiple scenes.
 
-        MAIN SUBJECT:
-        A terrifying but visually interesting zombie sitting and mindlessly scrolling
-        on a smartphone.
+                Return ONLY the final image-generation prompt.
+                Maximum 150 words.
+                """
 
-        IMPORTANT COMPOSITION:
-        The smartphone MUST be clearly visible in the zombie's hands and MUST be one
-        of the two main focal points of the image. Show the zombie looking directly at
-        the smartphone screen while actively scrolling with one finger. The phone
-        screen should be large, bright and clearly recognizable.
+            elif total_minutes > goal :
 
-        CHARACTER:
-        Show a zombie with pale decayed skin, messy hair, hollow tired eyes and a
-        slouched posture. Its face should be illuminated by the bright blue glow
-        coming directly from the smartphone screen.
+                avatar_ai_prompt = f"""
+                Create ONE highly detailed cinematic image-generation prompt.
 
-        ENVIRONMENT:
-        Place the zombie in a dark, slightly chaotic environment with scattered
-        objects, eerie atmosphere and atmospheric fog. The glowing smartphone should
-        create a strong pool of blue light around the zombie.
+                MAIN SUBJECT:
+                A terrifying but visually interesting zombie sitting and mindlessly scrolling
+                on a smartphone.
 
-        VISUAL STYLE:
-        Dramatic cinematic lighting, strong shadows, detailed textures, atmospheric
-        fog, realistic depth of field, dynamic camera composition and professional
-        dark-fantasy digital-art quality.
+                IMPORTANT COMPOSITION:
+                The smartphone MUST be clearly visible in the zombie's hands and MUST be one
+                of the two main focal points of the image. Show the zombie looking directly at
+                the smartphone screen while actively scrolling with one finger. The phone
+                screen should be large, bright and clearly recognizable.
 
-        The zombie's hands, smartphone and glowing screen must be clearly visible.
-        Do NOT hide, remove, obscure or replace the smartphone.
+                CHARACTER:
+                Show a zombie with pale decayed skin, messy hair, hollow tired eyes and a
+                slouched posture. Its face should be illuminated by the bright blue glow
+                coming directly from the smartphone screen.
 
-        No text, captions, logos, UI, statistics or multiple scenes.
+                ENVIRONMENT:
+                Place the zombie in a dark, slightly chaotic environment with scattered
+                objects, eerie atmosphere and atmospheric fog. The glowing smartphone should
+                create a strong pool of blue light around the zombie.
 
-        Return ONLY the final image-generation prompt.
-        Maximum 150 words.
-        """
-    try:
-        avatar_response = client.chat.completions.create(
-        model="google/gemini-2.5-flash",
-        messages=[{"role": "user", "content": avatar_ai_prompt}],
-        max_tokens=500
-        )
+                VISUAL STYLE:
+                Dramatic cinematic lighting, strong shadows, detailed textures, atmospheric
+                fog, realistic depth of field, dynamic camera composition and professional
+                dark-fantasy digital-art quality.
 
-        avatar_prompt = avatar_response.choices[0].message.content.strip()
-        encoded_prompt = urllib.parse.quote(avatar_prompt)
+                The zombie's hands, smartphone and glowing screen must be clearly visible.
+                Do NOT hide, remove, obscure or replace the smartphone.
 
-        image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}"
-    
+                No text, captions, logos, UI, statistics or multiple scenes.
 
+                Return ONLY the final image-generation prompt.
+                Maximum 150 words.
+                """
+            try:
+                avatar_response = client.chat.completions.create(
+                model="google/gemini-2.5-flash",
+                messages=[{"role": "user", "content": avatar_ai_prompt}],
+                max_tokens=500
+                )
+
+                avatar_prompt = avatar_response.choices[0].message.content.strip()
+                encoded_prompt = urllib.parse.quote(avatar_prompt)
+
+                image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}"
+
+                #saving avatar url 
+                st.session_state.avatar_url = image_url
+                st.session_state.avatar_day = selected_day
+
+            except Exception:
+                st.toast("Avatar Can't be generated due to a technical issue")
+
+        except Exception:
+            st.toast("Avatar Can't be generated due to a technical issue")
+
+    if st.session_state.avatar_url is not None:
         with coln2:
 
             colm1, colm2, colm3 = st.columns([1, 8, 1])
 
+
             with colm2:
                 st.subheader("🎭 Life-OS Companion")
                 try:
-                    st.image(image_url, width=220)
+                    st.image(st.session_state.avatar_url, width=220)
                     if total_minutes > goal + 180:
 
                         caption = "🧟 Doomscroll Zombie"
@@ -497,12 +280,8 @@ def show_usage():
                     st.success(caption)
 
                     st.caption(message)
-                except:
+                except Exception:
                     st.toast("Avatar Can't be generated")
-    except Exception as e:
-        with coln2:
-            st.subheader("🎭 Life-OS Companion")
-            st.info("🎭 Your AI companion is temporarily unavailable. ")
 
 
     st.divider()
@@ -598,15 +377,87 @@ def show_ai():
                     max_tokens=500
                 )
 
-                advice = response.choices[0].message.content
+                advice1 = response.choices[0].message.content
+
+                st.session_state.ai_advice=advice1
 
                 if total_minutes > goal:
-                    st.warning(advice)
+                    st.warning(advice1)
                 else:
-                    st.info(advice)
+                    st.info(advice1)
+
+            
 
         except Exception as e:
             st.toast("Unable to generate AI advice.")
+
+    st.write("Want more personalized advice based on your screen-time habits? then ask below")
+    #AI Coach Form 
+    with st.form("AI Coach Form 🤖 "):
+        user_context = st.text_area(
+            "Ask more that you want your AI coach to consider:",
+            placeholder=" type your query",
+            height=100
+        )
+        submitted = st.form_submit_button(
+            "Ask AI"
+        )
+
+    if submitted:
+        specific_asked_query_prompt =f"""
+        You are the AI Life Coach inside Life-OS.
+
+        Your job is to analyze the user's digital habits and provide
+        practical, realistic wellbeing advice.
+
+        User's screen-time information:
+
+        Date: {selected_day}
+        Total screen time: {total_minutes} minutes
+        Daily goal: {goal} minutes
+        Most used app: {top_app}
+        Category breakdown:
+        {summary_text}
+        user context:
+        {user_context if user_context.strip() else "No additional context provided."}
+
+        Give the user:
+
+        1. Solution of user context based on their analysis of their digital habits.
+        2. The main issue they should focus on.
+        3. Three practical actions they can take.
+        4. One simple goal for today.
+
+        Keep the response concise, supportive, and practical.
+        Do not give medical advice.
+        """
+        try:
+            with st.spinner("Analyzing your digital habits... 🤖"):
+
+                response = client.chat.completions.create(
+                    model="google/gemini-2.5-flash",
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": specific_asked_query_prompt 
+                        }
+                    ],
+                    max_tokens=500
+                )
+
+                advice = response.choices[0].message.content
+                st.success("Your personalized advice is ready!")
+
+                st.info(advice)
+        except Exception:
+            st.warning(
+                "🤖 AI Coach is temporarily unavailable. "
+                "Your dashboard is still working normally."
+            )
+
+    if st.session_state.ai_advice:
+        st.subheader("🧠 Your Latest AI Advice")
+        st.info(st.session_state.ai_advice)
 
 
 if page == "🏠 Overview":
