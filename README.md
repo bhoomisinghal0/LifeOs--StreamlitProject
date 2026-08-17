@@ -18,7 +18,7 @@
 
 # 📖 About the Project
 
-Life-OS is an **AI-powered Digital Wellbeing Dashboard** built using **Streamlit** and **Google Gemini AI**.
+Life-OS is an **AI-powered Digital Wellbeing Dashboard** built using **Streamlit**, **Pandas**, and an **OpenRouter-hosted Gemini model**.
 
 It analyzes a user's daily screen time habits, visualizes usage trends, generates personalized productivity coaching, and even creates an AI-generated digital avatar representing the user's digital lifestyle.
 
@@ -26,39 +26,52 @@ This project was developed as part of the **MirAI School of Technology – AI Bu
 
 ---
 
+
+# 🏗️ System Architecture
+
+Life-OS follows a simple data-to-insight pipeline:
+
+**Screen-Time Data → Pandas Processing → KPI & Analytics → AI Coach → Structured JSON → Visual Insights**
+
+<img src="docs/System_architecture.png" width="1000"/>
+---
+
 # ✨ Features
 
 ## 📊 Smart Dashboard
 
-- Daily screen time tracking
+- Daily screen-time tracking
 - Interactive date selection
-- Daily goal slider
-- KPI cards
-- 14-Day usage trend visualization
+- Custom daily screen-time goal
+- KPI cards with goal comparison
+- 14-Day screen-time trend visualization
+- Interactive screen-time data editor
+- Session-based data updates
 
 ---
 
-## 🤖 AI Productivity Coach
+## 🤖 AI Wellbeing Coach
 
-Powered by **Google Gemini**
+Powered by an **OpenRouter-hosted Gemini model**
 
 The AI:
 
-- Analyzes screen-time categories
-- Detects unhealthy habits
-- Appreciates productive coding time
-- Suggests offline replacements
-- Gives motivational coaching
-
+- Analyzes daily screen-time categories
+- Identifies usage patterns
+- Detects areas requiring attention
+- Appreciates productive coding and educational usage
+- Suggests practical offline alternatives
+- Provides personalized recommendations
+- Generates a daily challenge
+- Produces a structured JSON-based coaching response
+- Accepts personalized user questions
 ---
 
 ## 🎭 AI Digital Avatar
 
-Gemini generates an image prompt based on your daily habits.
+Life-OS generates a personalized avatar concept based on the user's daily digital habits.
 
-The avatar changes depending on your lifestyle.
-
-Examples:
+The avatar can represent different digital lifestyle patterns, such as:
 
 🧟 Doomscroll Zombie
 
@@ -68,7 +81,20 @@ Examples:
 
 Images are generated dynamically using **Pollinations AI**.
 
+Avatar generation is handled gracefully so that an avatar failure does not break the main dashboard.
+
 ---
+
+## 📝 Interactive Data Editor
+
+Life-OS includes an interactive screen-time data table using Streamlit's `st.data_editor`.
+
+Users can:
+
+- View screen-time records
+- Edit data interactively
+- Save changes for the current session
+- Automatically refresh dashboard calculations after saving
 
 ## 🔗 Shareable Accountability Link
 
@@ -98,15 +124,47 @@ Example:
 
 | Technology | Purpose |
 |------------|---------|
-| Python | Backend |
-| Streamlit | Dashboard |
-| Pandas | Data Processing |
-| Google Gemini API | AI Coaching |
-| Pollinations AI | AI Avatar |
-| HTML + CSS | Custom UI |
+| Python | Application logic |
+| Streamlit | Dashboard and UI |
+| Pandas | Data processing and analysis |
+| OpenRouter API | AI model access |
+| Gemini 2.5 Flash | AI reasoning and coaching |
+| Pollinations AI | AI avatar generation |
+| HTML + CSS | Custom UI styling |
+| Streamlit Session State | State persistence |
 
 ---
 
+# 🧠 Key Implementation Highlights
+
+### Session State Management
+
+`st.session_state` is used to preserve:
+
+- Selected date
+- Daily goal
+- AI coaching response
+- AI avatar state
+- Edited screen-time data
+
+### Structured AI Responses
+
+The AI Coach is instructed to return structured JSON containing:
+
+- Verdict
+- Patterns
+- Main issue
+- Recommended actions
+- Today's challenge
+- Scorecard
+
+The JSON is parsed in Python and transformed into the dashboard's visual coaching interface.
+
+### Graceful Error Handling
+
+AI and avatar generation failures are handled without allowing the entire dashboard to crash.
+
+---
 # 📸 Screenshots
 
 ## Dashboard
@@ -145,16 +203,22 @@ Example:
 Life-OS/
 │
 ├── app.py
+├── style.css
 ├── screentime.csv
 ├── requirements.txt
 ├── .gitignore
 ├── README.md
+│
+├── docs/
+│   └── System_architecture.png
+│
 ├── screenshots/
 │   ├── dashboard.png
 │   ├── coach.png
 │   ├── avatar.png
 │   ├── kpi.png
-|   └── graph.png
+│   └── graph.png
+│
 └── .env
 ```
 
@@ -183,7 +247,7 @@ pip install -r requirements.txt
 Create a `.env` file
 
 ```env
-API_KEY=YOUR_GEMINI_API_KEY
+OPENROUTER_API_KEY=YOUR_OPENROUTER_API_KEY
 ```
 
 Run the app
@@ -236,6 +300,6 @@ GitHub: *https://github.com/bhoomisinghal0*
 
 ### ⭐ If you like this project, consider giving it a star!
 
-Made with ❤️ using Streamlit & Gemini AI
+Made with ❤️ using Streamlit, Pandas & AI
 
 </div>
