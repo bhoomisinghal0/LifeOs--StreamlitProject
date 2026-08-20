@@ -70,44 +70,6 @@ if st.session_state.user_name is None:
     show_signup()
 
 else:
-    def welcome():
-        st.markdown(
-        '<div class="lifeos-title">🧠 Life-OS Dashboard</div>',
-        unsafe_allow_html=True
-        )
-
-        st.markdown(
-            """
-            <div class="hero-subtitle">
-                🔮 AI Powered Digital Wellbeing Dashboard
-            </div>
-
-            <div class="hero-tagline">
-                Reclaim your time, one mindful day at a time.
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        current_hour = datetime.now().hour
-
-        if current_hour < 12:
-            greeting = "Good morning"
-        elif current_hour < 17:
-            greeting = "Good afternoon"
-        else:
-            greeting = "Good evening"
-
-        st.markdown(
-            f"""
-            <div class="welcome-section">
-                <h1>{greeting}, {st.session_state.user_name} 👋</h1>
-                <p>Here's your Life-OS overview for today.</p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        st.divider()
     #SIDEBAR 
 
     st.sidebar.header("Controls 🕹️")
@@ -174,6 +136,62 @@ else:
     shared_time = params.get("screen_time")
 
     shared_date = params.get("date")
+    top_app = today_df.groupby("App_Name")["Minutes_Used"].sum().idxmax()
+    
+    delta = goal - total_minutes
+
+    def welcome():
+        # ---------- WELCOME SECTION ----------
+             
+        st.markdown(
+        '<div class="lifeos-title">🧠 Life-OS Dashboard</div>',
+        unsafe_allow_html=True
+        )
+
+        st.markdown(
+            """
+            <div class="hero-subtitle">
+                🔮 AI Powered Digital Wellbeing Dashboard
+            </div>
+
+            <div class="hero-tagline">
+                Reclaim your time, one mindful day at a time.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        current_hour = datetime.now().hour
+
+        if current_hour < 12:
+            greeting = "Good morning"
+        elif current_hour < 17:
+            greeting = "Good afternoon"
+        else:
+            greeting = "Good evening"
+
+        # Change this later to the name from your signup form
+        user_name = st.session_state.get("user_name", "User")
+
+        st.markdown(
+        f"""<div class="welcome-card">
+        <div class="welcome-content">
+        <h2>{greeting}, {user_name} 👋</h2>
+        <p>Here's your Life-OS overview for today.</p>
+        </div>
+        <div class="usage-badge">
+        <div class="usage-icon">◷</div>
+        <div class="usage-number">{total_minutes}</div>
+        <div class="usage-unit">min</div>
+        <div class="usage-label">Today's Usage</div>
+        </div>
+        </div>""",
+        unsafe_allow_html=True
+        )
+
+        st.markdown("<div class='section-space'></div>", unsafe_allow_html=True)
+        st.divider()
+
 
 
     def show_usage():
@@ -341,11 +359,6 @@ else:
         st.divider()
 
 
-    top_app = today_df.groupby("App_Name")["Minutes_Used"].sum().idxmax()
-
-    delta = goal - total_minutes
-
-
     def show_kpi():
         st.header("Your Key Performance:")
 
@@ -382,7 +395,7 @@ else:
             )
 
         st.divider()
-
+    def edit():
         st.subheader("📝 Screen-Time Data")
 
         edited_df = st.data_editor(
@@ -398,11 +411,10 @@ else:
 
 
     def show_graph():
-        st.header("14 Days Screen-Time Trend")
+        st.subheader("14 Days Screen-Time Trend")
         trend = df.groupby("Date")["Minutes_Used"].sum()
-        st.subheader("📈 Screen Time Trend (14 Days)")
-
         st.line_chart(trend, height=350)
+        st.divider()
 
 
     def show_ai():
@@ -684,7 +696,9 @@ else:
         show_kpi()
 
     elif page == "📈 Analytics":
+        st.header("📈 Analytics")
         show_graph()
+        edit()
 
     elif page == "🤖 AI Coach":
         show_ai()

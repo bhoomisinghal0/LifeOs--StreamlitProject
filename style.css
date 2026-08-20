@@ -382,3 +382,216 @@ div[data-testid="column"] > div {
 
     font-weight: 500;
 }
+/* =========================================================
+   LIFE-OS HOMEPAGE — PROFESSIONAL WELCOME SECTION
+   ========================================================= */
+
+/* ---------- WELCOME CARD ---------- */
+
+.welcome-card {
+    width: 100%;
+    min-height: 190px;
+
+    margin: 20px 0 30px 0;
+    padding: 32px 38px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-radius: 24px;
+
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(168, 85, 247, 0.55),
+            transparent 45%
+        ),
+        linear-gradient(
+            135deg,
+            #5b2db5 0%,
+            #7138c5 45%,
+            #7136a8 100%
+        );
+
+    border: 1px solid rgba(225, 120, 255, 0.8);
+
+    box-shadow:
+        0 0 12px rgba(181, 23, 158, 0.45),
+        0 0 30px rgba(123, 47, 247, 0.30),
+        inset 0 0 30px rgba(255, 255, 255, 0.06);
+
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* ---------- SOFT WAVE ---------- */
+
+.welcome-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 75%;
+    height: 100px;
+
+    right: -10%;
+    bottom: -55px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    transform: rotate(-5deg);
+
+    pointer-events: none;
+}
+
+
+/* ---------- WELCOME TEXT ---------- */
+
+.welcome-content {
+    position: relative;
+    z-index: 2;
+}
+
+.welcome-content h2 {
+    margin: 0 0 14px 0 !important;
+
+    color: #ffffff !important;
+
+    font-family: 'Inter', sans-serif !important;
+
+    font-size: 38px !important;
+
+    font-weight: 800 !important;
+
+    text-shadow:
+        0 0 8px rgba(255,255,255,0.25) !important;
+}
+
+.welcome-content p {
+    margin: 0;
+
+    color: rgba(255,255,255,0.9);
+
+    font-size: 17px;
+
+    font-weight: 500;
+}
+
+
+/* ---------- USAGE BADGE ---------- */
+
+.usage-badge {
+    position: relative;
+    z-index: 2;
+
+    width: 155px;
+    min-height: 125px;
+
+    padding: 14px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    background: rgba(255,255,255,0.10);
+
+    border: 1px solid rgba(255,255,255,0.18);
+
+    box-shadow:
+        inset 0 0 20px rgba(255,255,255,0.04),
+        0 8px 25px rgba(0,0,0,0.15);
+}
+
+
+/* ---------- USAGE ICON ---------- */
+
+.usage-icon {
+    font-size: 27px;
+
+    line-height: 1;
+
+    color: #ffffff;
+}
+
+
+/* ---------- USAGE NUMBER ---------- */
+
+.usage-number {
+    margin-top: 2px;
+
+    font-size: 38px;
+
+    line-height: 1;
+
+    font-weight: 800;
+
+    color: #ffffff;
+}
+
+
+/* ---------- MIN ---------- */
+
+.usage-unit {
+    margin-top: 4px;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    color: #ffffff;
+}
+
+
+/* ---------- TODAY'S USAGE ---------- */
+
+.usage-label {
+    margin-top: 12px;
+
+    font-size: 14px;
+
+    color: rgba(255,255,255,0.85);
+}
+
+
+/* ---------- SECTION SPACING ---------- */
+
+.section-space {
+    height: 2px;
+
+    border-top: 1px solid rgba(255,255,255,0.16);
+
+    margin: 0 0 25px 0;
+}
+
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 800px) {
+
+    .welcome-card {
+        padding: 25px;
+    }
+
+    .welcome-content h2 {
+        font-size: 30px !important;
+    }
+
+    .usage-badge {
+        width: 130px;
+    }
+
+    .usage-number {
+        font-size: 30px;
+    }
+}
