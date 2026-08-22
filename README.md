@@ -545,7 +545,7 @@ toast notifications where appropriate.
 
 ## 🎭 Digital Avatar
 
-<img src="screenshots/avatar.png" width="500"/>
+<img src="screenshots/avatar.png" width="900"/>
 
 ------------------------------------------------------------------------
 
