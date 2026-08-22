@@ -4,6 +4,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os
 from datetime import datetime
+from zoneinfo import ZoneInfo #for india zone timing
 import json
 import base64 #binary to text ,, text to binary
 import urllib.parse  # help in building pollination url
@@ -176,7 +177,7 @@ else:
             unsafe_allow_html=True,
         )
 
-        current_hour = datetime.now().hour
+        current_hour = datetime.now(ZoneInfo("Asia/Kolkata")).hour
 
         if current_hour < 12:
             greeting = "Good morning"
