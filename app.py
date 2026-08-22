@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime
 import json
+import base64 #binary to text ,, text to binary
 import urllib.parse  # help in building pollination url
 from pathlib import Path #for linking css file
 
@@ -39,6 +40,8 @@ if "avatar_url" not in st.session_state:
     st.session_state.avatar_url = None
 if "edited_df" not in st.session_state:
     st.session_state.edited_df = df.copy()
+# Always use the current session data
+df = st.session_state.edited_df.copy()
 
 
 def show_signup():
@@ -76,7 +79,19 @@ else:
 
 
     dates = sorted(df["Date"].unique())
-    selected_day = st.sidebar.selectbox("Choose date", dates, key="selected_day")
+    default_index = 0
+
+    if "imported_date" in st.session_state:
+        if st.session_state.imported_date in dates:
+            default_index = dates.index(
+                st.session_state.imported_date
+            )
+
+    selected_day = st.sidebar.selectbox(
+        "Select Date",
+        dates,
+        index=default_index
+    )
 
     goal = st.sidebar.slider(
         "Daily Goal (in minutes)",
@@ -113,7 +128,7 @@ else:
             "🎭 Avatar Companion",
             "📊 Performance",
             "📈 Analytics",
-            "🤖 AI Coach",
+            "🤖 AI Coach & Advance Features",
         ],
         label_visibility="collapsed"
     )
@@ -299,24 +314,24 @@ else:
                     Return ONLY the final image-generation prompt.
                     Maximum 150 words.
                     """
-                #try:
-            #         avatar_response = client.chat.completions.create(
-            #         model="google/gemini-2.5-flash",
-            #         messages=[{"role": "user", "content": avatar_ai_prompt}],
-            #         max_tokens=500
-            #         )
+                try:
+                    avatar_response = client.chat.completions.create(
+                    model="google/gemini-2.5-flash",
+                    messages=[{"role": "user", "content": avatar_ai_prompt}],
+                    max_tokens=500
+                    )
 
-            #         avatar_prompt = avatar_response.choices[0].message.content.strip()
-            #         encoded_prompt = urllib.parse.quote(avatar_prompt)
+                    avatar_prompt = avatar_response.choices[0].message.content.strip()
+                    encoded_prompt = urllib.parse.quote(avatar_prompt)
 
-            #         image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}"
+                    image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}"
 
-            #         #saving avatar url 
-            #         st.session_state.avatar_url = image_url
-            #         st.session_state.avatar_day = selected_day
+                    #saving avatar url 
+                    st.session_state.avatar_url = image_url
+                    st.session_state.avatar_day = selected_day
 
-            #     except Exception:
-            #         st.toast("Avatar Can't be generated due to a technical issue")
+                except Exception:
+                    st.toast("Avatar Can't be generated due to a technical issue")
 
             except Exception:
                 st.toast("Avatar Can't be generated due to a technical issue")
@@ -419,101 +434,129 @@ else:
 
     def show_ai():
 
-        prompt = f"""
-        You are Life-OS AI, a digital wellbeing coach.
+        system_prompt = f"""
+        You are Life-OS AI, a personalized digital wellbeing coach.
 
-        Analyze the user's screen-time data.
+        Your job is to analyze the user's screen-time habits and provide
+        practical, realistic, and personalized digital wellbeing guidance.
 
-        Today's screen-time data:
-        {summary_text}
-
-        Daily goal: {goal} minutes
-        Actual screen time: {total_minutes} minutes
-
-        Return ONLY valid JSON.
-        Do not use Markdown.
-        Do not use ```json.
-        Do not write anything outside the JSON.
-
-        Return exactly this structure:
-
-        {{
-            "verdict": {{
-                "status": "GOOD or NEEDS_ATTENTION",
-                "title": "short title",
-                "summary": "one short sentence"
-            }},
-
-            "snapshot": {{
-                "total_minutes": {total_minutes},
-                "goal_minutes": {goal},
-                "difference_minutes": {total_minutes - goal}
-            }},
-
-            "patterns": [
-                {{
-                    "title": "short pattern",
-                    "description": "short explanation"
-                }}
-            ],
-
-            "main_issue": {{
-                "title": "main issue",
-                "why": "short explanation"
-            }},
-
-            "actions": [
-                {{
-                    "title": "action 1",
-                    "description": "practical suggestion",
-                    "priority": "HIGH"
-                }},
-                {{
-                    "title": "action 2",
-                    "description": "practical suggestion",
-                    "priority": "MEDIUM"
-                }},
-                {{
-                    "title": "action 3",
-                    "description": "practical suggestion",
-                    "priority": "MEDIUM"
-                }}
-            ],
-
-            "today_challenge": {{
-                "title": "small challenge",
-                "description": "one achievable action"
-            }},
-
-            "scorecard": {{
-                "strength": "one short line",
-                "attention": "one short line",
-                "next_step": "one short line"
-            }}
-        }}
-
-        Rules:
-
-        - Use only the supplied screen-time data.
+        Follow these rules:
+        - Base your analysis only on the data provided by the application.
         - Never invent screen-time numbers.
-        - If Coding is high, appreciate productive coding work.
-        - Never recommend reducing coding time.
-        - If Social Media is high, suggest practical offline alternatives.
-        - If Entertainment is high, recommend healthier leisure alternatives.
-        - Keep every explanation concise.
-        - Give realistic suggestions.
+        - Treat coding and educational screen time as potentially productive.
+        - Never recommend reducing coding time when it is being used productively.
+        - If Social Media usage is high, suggest practical offline alternatives.
+        - If Entertainment usage is high, suggest healthier leisure alternatives.
+        - Keep recommendations concise and achievable.
+        - Return the requested information in valid JSON only.
         """
+        prompt= f"""
+            Analyze the user's current screen-time data.
+
+            Today's screen-time data:
+            {summary_text}
+
+            Daily goal: {goal} minutes
+            Actual screen time: {total_minutes} minutes
+
+            Return exactly the JSON structure requested below.
+
+            {{
+                "verdict": {{
+                    "status": "GOOD or NEEDS_ATTENTION",
+                    "title": "short title",
+                    "summary": "one short sentence"
+                }},
+
+                "snapshot": {{
+                    "total_minutes": {total_minutes},
+                    "goal_minutes": {goal},
+                    "difference_minutes": {total_minutes - goal}
+                }},
+
+                "patterns": [
+                    {{
+                        "title": "short pattern",
+                        "description": "short explanation"
+                    }}
+                ],
+
+                "main_issue": {{
+                    "title": "main issue",
+                    "why": "short explanation"
+                }},
+
+                "actions": [
+                    {{
+                        "title": "action 1",
+                        "description": "practical suggestion",
+                        "priority": "HIGH"
+                    }},
+                    {{
+                        "title": "action 2",
+                        "description": "practical suggestion",
+                        "priority": "MEDIUM"
+                    }},
+                    {{
+                        "title": "action 3",
+                        "description": "practical suggestion",
+                        "priority": "MEDIUM"
+                    }}
+                ],
+
+                "today_challenge": {{
+                    "title": "small challenge",
+                    "description": "one achievable action"
+                }},
+
+                "scorecard": {{
+                    "strength": "one short line",
+                    "attention": "one short line",
+                    "next_step": "one short line"
+                }}
+            }}
+
+            Rules:
+
+            - Use only the supplied screen-time data.
+            - Never invent screen-time numbers.
+            - If Coding is high, appreciate productive coding work.
+            - Never recommend reducing coding time.
+            - If Social Media is high, suggest practical offline alternatives.
+            - If Entertainment is high, recommend healthier leisure alternatives.
+            - Keep every explanation concise.
+            - Give realistic suggestions.
+            """
 
         if st.button("🤖 Get AI Advice"):
             try:
                 with st.spinner("Analyzing your digital habits...🤖"):
                     response = client.chat.completions.create(
                         model="google/gemini-2.5-flash",
-                        messages=[{"role": "user", "content": prompt}],
+                        messages=[{
+                                        "role": "system",
+                                        "content": system_prompt
+                                    },
+                                    {
+                                        "role": "user",
+                                        "content": prompt
+                                }],
                         max_tokens=1000
-                    )
+                        )
 
                     raw_response = response.choices[0].message.content
+
+                    # Remove Markdown code fences if the AI adds them
+                    if raw_response.startswith("```json"):
+                        raw_response = raw_response[7:]
+                    elif raw_response.startswith("```"):
+                        raw_response = raw_response[3:]
+
+                    if raw_response.endswith("```"):
+                        raw_response = raw_response[:-3]
+
+                    raw_response = raw_response.strip()
+                    
                     try:
                         advice_data = json.loads(raw_response)
                     except json.JSONDecodeError:
@@ -600,19 +643,34 @@ else:
                     response = client.chat.completions.create(
                         model="google/gemini-2.5-flash",
                         messages=[
-                            {
-                                "role": "user",
-                                "content":prompt + f"""
-                                            USER'S SPECIFIC QUESTION:
-                                            {user_context}
-                                            Answer this specific question using the same JSON structure requested above.
-                                            """
-                            }
-                        ],
+                                        {
+                                            "role": "system",
+                                            "content": system_prompt
+                                        },
+                                        {
+                                            "role": "user",
+                                            "content": prompt + f"""
+                                            
+                                USER'S SPECIFIC QUESTION:
+                                {user_context}
+
+                                Answer this specific question using the same JSON structure requested above.
+                                """
+                                        }
+                                    ],
                         max_tokens=1000
                     )
 
                     raw_response = response.choices[0].message.content
+
+                    # Remove Markdown code fences if the AI adds them
+                    if raw_response.startswith("```json"):
+                        raw_response = raw_response[7:]
+                    elif raw_response.startswith("```"):
+                        raw_response = raw_response[3:]
+
+                    if raw_response.endswith("```"):
+                        raw_response = raw_response[:-3]
                     try:
                         advice_data = json.loads(raw_response)
                     except json.JSONDecodeError:
@@ -680,6 +738,404 @@ else:
                     "🤖 AI Coach is temporarily unavailable. "
                     "Your dashboard is still working normally."
                 )
+        st.divider()
+        screen_time_image = import_screen_time_from_image()
+
+    def import_screen_time_from_image():
+
+        st.markdown(
+            """
+            <div class="ai-section-title">
+                <div>
+                    <h2>Import Screen Time 📸</h2>
+                    <p>Capture or upload your screen-time settings to create a new day.</p>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        camera_col, upload_col = st.columns(2, gap="medium")
+
+        with camera_col:
+            st.markdown(
+                '<div class="input-label">Take a screen-time screenshot</div>',
+                unsafe_allow_html=True
+            )
+
+            camera_image = st.camera_input(
+                "Take Photo",
+                label_visibility="collapsed"
+            )
+
+        with upload_col:
+            st.markdown(
+                '<div class="input-label">Or upload a screen-time screenshot</div>',
+                unsafe_allow_html=True
+            )
+
+            uploaded_image = st.file_uploader(
+                "Upload Screenshot",
+                type=["png", "jpg", "jpeg"],
+                label_visibility="collapsed"
+            )
+
+        screen_time_image = camera_image or uploaded_image
+
+        if screen_time_image:
+            st.divider()
+            st.subheader("Uploaded Screenshot Preview")
+            st.image(
+                screen_time_image,
+                caption="Screen-time screenshot",
+                width=350
+            )
+
+            if st.button("🔍 Analyze Screenshot", key="analyze_screen_time"):
+
+                with st.spinner("Reading your screen-time screenshot... 🤖"):
+
+                    try:
+                        # Read image bytes
+                        image_bytes = screen_time_image.getvalue()
+
+                        # Convert image to base64 string to embed in api
+                        image_base64 = base64.b64encode(
+                            image_bytes
+                        ).decode("utf-8")
+
+                        # Detect image type
+                        mime_type = screen_time_image.type
+
+                        # Gemini vision prompt
+                        vision_prompt = """
+            You are the Life-OS Screen-Time Data Extractor.
+
+            Analyze the provided screen-time settings screenshot.
+
+            Extract only information that is clearly visible in the screenshot.
+
+            Return ONLY valid JSON.
+            Do not use Markdown.
+            Do not use ```json.
+            Do not add explanations outside the JSON.
+
+            Return exactly this structure:
+
+            {
+                "date": "YYYY-MM-DD or null",
+                "apps": [
+                    {
+                        "app_name": "string",
+                        "category": "Social Media | Education | Entertainment | Coding | Other",
+                        "minutes_used": 0
+                    }
+                ]
+            }
+
+            Rules:
+
+            - Extract every clearly visible app with its screen-time duration.
+            - Convert hours and minutes into total minutes.
+            - Example: 2h 30m = 150 minutes.
+            - Do not invent apps or usage times.
+            - If the date is not visible, return null.
+            - If an app category is unclear, use "Other".
+            - minutes_used must be an integer.
+            """
+
+                        response = client.chat.completions.create(
+                            model="google/gemini-2.5-flash",
+                            messages=[
+                                {
+                                    "role": "system",
+                                    "content": (
+                                        "You are a precise screen-time "
+                                        "data extraction engine for Life-OS."
+                                    )
+                                },
+                                {
+                                    "role": "user",
+                                    "content": [
+                                        {
+                                            "type": "text",
+                                            "text": vision_prompt
+                                        },
+                                        {
+                                            "type": "image_url",
+                                            "image_url": {
+                                                "url": (
+                                                    f"data:{mime_type};"
+                                                    f"base64,{image_base64}"
+                                                )
+                                            }
+                                        }
+                                    ]
+                                }
+                            ],
+                            max_tokens=1000
+                        )
+
+                        raw_response = (
+                            response.choices[0].message.content.strip()
+                        )
+
+                        # Remove Markdown code fences if Gemini adds them
+                        if raw_response.startswith("```json"):
+                            raw_response = raw_response[7:]
+                        elif raw_response.startswith("```"):
+                            raw_response = raw_response[3:]
+
+                        if raw_response.endswith("```"):
+                            raw_response = raw_response[:-3]
+
+                        raw_response = raw_response.strip()
+
+                        extracted_data = json.loads(raw_response)
+
+                        #VALIDATE EXTRACTED DATA
+
+                        if not isinstance(extracted_data, dict):
+                            raise ValueError("Gemini response is not a JSON object.")
+
+                        if "apps" not in extracted_data:
+                            raise ValueError("Gemini response is missing the apps field.")
+
+                        if not isinstance(extracted_data["apps"], list):
+                            raise ValueError("Apps data is not in the expected format.")
+
+                        valid_apps = []
+
+                        for app in extracted_data["apps"]:
+
+                            if not isinstance(app, dict):
+                                continue
+
+                            app_name = app.get("app_name")
+                            category = app.get("category")
+                            minutes = app.get("minutes_used")
+
+                            if not app_name:
+                                continue
+
+                            if category not in [
+                                "Social Media",
+                                "Education",
+                                "Entertainment",
+                                "Coding",
+                                "Other"
+                            ]:
+                                category = "Other"
+
+                            try:
+                                minutes = int(minutes)
+                            except (TypeError, ValueError):
+                                continue
+
+                            if minutes < 0:
+                                continue
+
+                            valid_apps.append({
+                                "app_name": app_name,
+                                "category": category,
+                                "minutes_used": minutes
+                            })
+
+                        if not valid_apps:
+                            raise ValueError(
+                                "No valid screen-time apps were found in the screenshot."
+                            )
+
+                        extracted_data["apps"] = valid_apps
+
+                        st.session_state.extracted_screen_time = extracted_data
+
+                        st.success(
+                            "Screenshot analyzed successfully! Please review the data below. ✅"
+                        )
+        
+                    except json.JSONDecodeError:
+                        st.error(
+                            "Gemini returned an invalid data format. "
+                            "Please try the screenshot again."
+                        )
+
+                    except Exception as e:
+                        st.error(
+                            f"Unable to analyze the screenshot: {e}"
+                        )
+        # REVIEW EXTRACTED DATA
+
+        if "extracted_screen_time" in st.session_state:
+
+            extracted_data = st.session_state.extracted_screen_time
+
+            st.markdown("### 📋 Review Extracted Screen-Time Data")
+
+            review_df = pd.DataFrame(
+                extracted_data["apps"]
+            )
+
+            review_df = review_df.rename(
+                columns={
+                    "app_name": "App",
+                    "category": "Category",
+                    "minutes_used": "Minutes Used"
+                }
+            )
+            # IMPORT DATE
+
+            default_import_date = extracted_data.get("date")
+
+            try:
+                if default_import_date:
+                    import_date = datetime.strptime(
+                        default_import_date,
+                        "%Y-%m-%d"
+                    ).date()
+                else:
+                    import_date = datetime.today().date()
+            except (ValueError, TypeError):
+                import_date = datetime.today().date()
+
+            import_date = st.date_input(
+                "📅 Date for this screen-time data",
+                value=import_date,
+                key="screen_time_import_date"
+            )
+
+            edited_review_df = st.data_editor(
+                review_df,
+                use_container_width=True,
+                hide_index=True,
+                num_rows="dynamic",
+
+                column_config={
+                    "App": st.column_config.TextColumn(
+                        "App Name",
+                        required=True
+                    ),
+
+                    "Category": st.column_config.SelectboxColumn(
+                        "Category",
+                        options=[
+                            "Social Media",
+                            "Education",
+                            "Entertainment",
+                            "Coding",
+                            "Other"
+                        ],
+                        required=True
+                    ),
+
+                    "Minutes Used": st.column_config.NumberColumn(
+                        "Minutes Used",
+                        min_value=0,
+                        step=1,
+                        required=True
+                    )
+                },
+
+                key="screen_time_editor"
+            )
+
+            st.session_state.reviewed_screen_time = edited_review_df
+
+            st.info(
+                "Review the extracted values carefully. "
+                "You can edit, add, or remove rows before importing."
+            )
+
+            if st.button(
+                "✅ Verify & Import This Day",
+                key="verify_import_screen_time"
+            ):
+                # Make a copy so we don't accidentally modify
+                # the editable table directly
+                import_df = edited_review_df.copy()
+
+                # ---------- VALIDATE USER-EDITED DATA ----------
+
+                import_df["App"] = import_df["App"].astype(str).str.strip()
+
+                import_df["Category"] = import_df["Category"].fillna("Other")
+
+                import_df["Minutes Used"] = pd.to_numeric(
+                    import_df["Minutes Used"],
+                    errors="coerce"
+                )
+                # Remove invalid rows
+                import_df = import_df[
+                    (import_df["App"] != "") &
+                    (import_df["Minutes Used"].notna()) &
+                    (import_df["Minutes Used"] >= 0)
+                ].copy()
+
+                if import_df.empty:
+
+                    st.error(
+                        "No valid screen-time data found. "
+                        "Please check the table."
+                    )
+
+                else:
+                     # ---------- PREVENT DUPLICATE DAY ----------
+
+                    import_date_str = import_date.strftime("%Y-%m-%d")
+
+                    existing_dates = (
+                        st.session_state.edited_df["Date"]
+                        .astype(str)
+                        .unique()
+                    )
+
+                    if import_date_str in existing_dates:
+
+                        st.warning(
+                            f"⚠️ {import_date_str} already exists in "
+                            "your Life-OS data. Please choose a new date."
+                        )
+                    else:
+
+                        # ---------- CONVERT TO LIFE-OS FORMAT ----------
+
+                        new_day_df = pd.DataFrame({
+                            "Date": import_date_str,
+                            "App_Name": import_df["App"],
+                            "Category": import_df["Category"],
+                            "Minutes_Used": import_df["Minutes Used"].astype(int)
+                        })
+
+                        # ---------- ADD NEW DAY ----------
+
+                        st.session_state.edited_df = pd.concat(
+                            [
+                                st.session_state.edited_df,
+                                new_day_df
+                            ],
+                             ignore_index=True
+                        )
+
+                        # Store imported date
+                        st.session_state.imported_date = import_date_str
+
+                        # Store verification state
+                        st.session_state.screen_time_verified = True
+
+                        st.success(
+                            f"🎉 {import_date_str} has been imported "
+                            "successfully into Life-OS!"
+                        )
+                        st.info(
+                            "Your new day has been added to the current "
+                            "Life-OS session."
+                        )
+                
+
+                st.success(
+                    "Data verified successfully! 🎉"
+                )
+        return screen_time_image
 
     if page == "🏠 Overview":
         welcome()
@@ -690,9 +1146,11 @@ else:
 
 
     elif page == "🎭 Avatar Companion":
+        st.header("🎭 Avatar Companion")
         show_usage()
 
     elif page == "📊 Performance":
+        st.header("📊 Performance")
         show_kpi()
 
     elif page == "📈 Analytics":
@@ -700,7 +1158,8 @@ else:
         show_graph()
         edit()
 
-    elif page == "🤖 AI Coach":
+    elif page == "🤖 AI Coach & Advance Features":
+        st.header("🤖 AI Coach & Advance Features")
         show_ai()
 
     st.divider()
