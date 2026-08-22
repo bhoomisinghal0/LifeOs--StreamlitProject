@@ -531,6 +531,12 @@ toast notifications where appropriate.
 
 # 📸 Screenshots
 
+## ✅ Sign Up
+
+<img src="screenshots/signup.png" width="900"/>
+
+------------------------------------------------------------------------
+
 ## 🏠 Dashboard
 
 <img src="screenshots/dashboard.png" width="900"/>
